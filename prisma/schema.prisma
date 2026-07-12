@@ -1,0 +1,224 @@
+// ===================================================================
+// ระบบแนะนำผ้าทอพื้นบ้านจังหวัดบุรีรัมย์เฉพาะบุคคล
+// Prisma schema — Postgres (Supabase)
+// ===================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")      // pooled  (port 6543) — ใช้ตอนรันแอป
+  directUrl = env("DIRECT_URL")        // direct  (port 5432) — ใช้ตอน migrate
+}
+
+// -------------------------------------------------------------------
+// 1) ชุดคำมาตรฐาน (Controlled vocabulary)
+//    หัวใจของระบบ: ตัวเลือกในแบบสอบถาม = tag ของผ้า = record เดียวกัน
+// -------------------------------------------------------------------
+
+model TagCategory {
+  id        String   @id @default(cuid())
+  code      String   @unique // occasion | color_tone | pattern | material
+  nameTh    String
+  question  String   // ข้อความคำถามที่จะแสดงในแบบสอบถาม
+  weight    Float    @default(0.25) // น้ำหนักถ่วงในการคิดคะแนน (ปรับได้จากหลังบ้าน)
+  multiple  Boolean  @default(false) // ผู้ใช้เลือกได้หลายข้อไหม
+  sortOrder Int      @default(0)
+  tags      Tag[]
+
+  @@map("tag_categories")
+}
+
+model Tag {
+  id          String      @id @default(cuid())
+  categoryId  String
+  category    TagCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  code        String // slug เช่น warm, mudmee, silk_pure
+  nameTh      String // ข้อความที่ผู้ใช้เห็น
+  description String? // คำอธิบายสั้น ๆ ช่วยผู้ใช้ตัดสินใจ
+  sortOrder   Int         @default(0)
+
+  fabricTags  FabricTag[]
+  answers     SessionAnswer[]
+
+  @@unique([categoryId, code])
+  @@map("tags")
+}
+
+// -------------------------------------------------------------------
+// 2) ข้อมูลผ้าและชุมชน
+// -------------------------------------------------------------------
+
+model Community {
+  id        String   @id @default(cuid())
+  name      String
+  district  String // อำเภอ
+  story     String? @db.Text // เรื่องเล่าชุมชน / ภูมิปัญญา
+  contact   String?
+  createdAt DateTime @default(now())
+  fabrics   Fabric[]
+
+  @@map("communities")
+}
+
+model Fabric {
+  id          String  @id @default(cuid())
+  name        String
+  description String  @db.Text
+  story       String? @db.Text // ที่มา ความหมายของลาย ภูมิปัญญา (Storytelling)
+  priceThb    Int // ราคา (บาท) — ใช้จับคู่กับงบประมาณ
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id])
+
+  isPublished Boolean @default(true)
+  viewCount   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tags       FabricTag[]
+  images     FabricImage[]
+  favorites  Favorite[]
+  results    RecommendationResult[]
+
+  @@map("fabrics")
+}
+
+model FabricImage {
+  id        String  @id @default(cuid())
+  fabricId  String
+  fabric    Fabric  @relation(fields: [fabricId], references: [id], onDelete: Cascade)
+  url       String // path ใน Supabase Storage
+  alt       String?
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  @@map("fabric_images")
+}
+
+model FabricTag {
+  fabricId String
+  tagId    String
+  fabric   Fabric @relation(fields: [fabricId], references: [id], onDelete: Cascade)
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([fabricId, tagId])
+  @@map("fabric_tags")
+}
+
+// -------------------------------------------------------------------
+// 3) ผู้ใช้
+// -------------------------------------------------------------------
+
+model User {
+  id        String   @id @default(cuid()) // ตรงกับ auth.users.id ของ Supabase
+  email     String   @unique
+  name      String?
+  role      Role     @default(MEMBER)
+  createdAt DateTime @default(now())
+
+  favorites Favorite[]
+  sessions  RecommendationSession[]
+
+  @@map("users")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  fabricId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fabric    Fabric   @relation(fields: [fabricId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, fabricId])
+  @@map("favorites")
+}
+
+// -------------------------------------------------------------------
+// 4) แบบสอบถาม + ผลการแนะนำ + การประเมิน (ข้อมูลสำหรับงานวิจัย)
+//    userId เป็น null ได้ = ผู้ใช้ทำแบบสอบถามแบบ guest
+// -------------------------------------------------------------------
+
+model RecommendationSession {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestToken String? // อ้างอิง session ของผู้ใช้ที่ยังไม่สมัคร
+
+  budgetMin  Int?
+  budgetMax  Int?
+
+  createdAt  DateTime @default(now())
+
+  answers    SessionAnswer[]
+  results    RecommendationResult[]
+  feedback   Feedback?
+
+  @@map("recommendation_sessions")
+}
+
+model SessionAnswer {
+  id        String                @id @default(cuid())
+  sessionId String
+  session   RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag                   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, tagId])
+  @@map("session_answers")
+}
+
+model RecommendationResult {
+  id         String                @id @default(cuid())
+  sessionId  String
+  session    RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  fabricId   String
+  fabric     Fabric                @relation(fields: [fabricId], references: [id], onDelete: Cascade)
+
+  score      Float // คะแนนรวม 0..1
+  rank       Int // อันดับที่แสดง
+  matchDetail Json // ความตรงรายมิติ + เหตุผล (ใช้แสดงผลและตรวจสอบย้อนหลังได้)
+
+  clicked    Boolean @default(false) // ผู้ใช้กดเข้าไปดูไหม (พฤติกรรมจริง)
+
+  @@unique([sessionId, fabricId])
+  @@map("recommendation_results")
+}
+
+model Feedback {
+  id        String                @id @default(cuid())
+  sessionId String                @unique
+  session   RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  isRelevant Boolean // "คำแนะนำนี้ตรงใจไหม?"
+  rating     Int? // 1..5 (ถ้าอยากเก็บละเอียด)
+  comment    String? @db.Text
+  createdAt  DateTime @default(now())
+
+  @@map("feedback")
+}
+
+// -------------------------------------------------------------------
+// 5) บทความ / เนื้อหาเล่าเรื่อง
+// -------------------------------------------------------------------
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  coverUrl    String?
+  content     String   @db.Text
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("articles")
+}
