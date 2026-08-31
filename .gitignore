@@ -23,6 +23,11 @@
 # misc
 .DS_Store
 *.pem
+Icon?
+
+# ต้นฉบับเอกสาร .docx ที่ใช้ seed ข้อมูลลายผ้า (~143MB รวม, เกิน limit ไฟล์ของ GitHub)
+# ข้อมูลถูกดึงเข้า DB หมดแล้วผ่าน scripts/seed-identity-fabrics.ts — ไม่ต้องเก็บต้นฉบับไว้ใน repo
+/docs
 
 # debug
 npm-debug.log*
@@ -39,3 +44,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# เครื่องนี้มี global gitignore (~/.gitignore_global) ที่ตั้ง "page.tsx" ไว้
+# ทำให้ไฟล์ route หลักของ Next.js App Router ทุกไฟล์ถูกซ่อนจาก git โดยไม่ตั้งใจ
+# กันไว้ที่นี่เพื่อไม่ให้เกิดซ้ำกับไฟล์ page.tsx ใหม่ในอนาคต
+!**/page.tsx

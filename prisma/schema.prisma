@@ -35,13 +35,14 @@ model Tag {
   id          String      @id @default(cuid())
   categoryId  String
   category    TagCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  code        String // slug เช่น warm, mudmee, silk_pure
+  code        String // slug เช่น warm, traditional, silk
   nameTh      String // ข้อความที่ผู้ใช้เห็น
   description String? // คำอธิบายสั้น ๆ ช่วยผู้ใช้ตัดสินใจ
   sortOrder   Int         @default(0)
 
   fabricTags  FabricTag[]
   answers     SessionAnswer[]
+  ratings     SessionRating[]
 
   @@unique([categoryId, code])
   @@map("tags")
@@ -70,7 +71,7 @@ model Fabric {
   story       String? @db.Text // ที่มา ความหมายของลาย ภูมิปัญญา (Storytelling)
   priceThb    Int // ราคา (บาท) — ใช้จับคู่กับงบประมาณ
   communityId String?
-  community   Community? @relation(fields: [communityId], references: [id])
+  community   Community? @relation(fields: [communityId], references: [id], onDelete: Restrict)
 
   isPublished Boolean @default(true)
   viewCount   Int     @default(0)
@@ -82,6 +83,7 @@ model Fabric {
   images     FabricImage[]
   favorites  Favorite[]
   results    RecommendationResult[]
+  articles   Article[]
 
   @@map("fabrics")
 }
@@ -153,16 +155,67 @@ model RecommendationSession {
   user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   guestToken String? // อ้างอิง session ของผู้ใช้ที่ยังไม่สมัคร
 
+  // ตอนที่ 1: ข้อมูลทั่วไป (nullable — ให้ผู้ใช้ข้ามได้)
+  gender         Gender?
+  ageRange       AgeRange?
+  occupation     Occupation?
+  monthlyIncome  IncomeRange?
+
+  // ตอนที่ 2: พฤติกรรม
+  pastUsageFreq  UsageFrequency?
+  // occasion (multi) → บันทึกใน SessionAnswer เดิม (tag-based)
+
   budgetMin  Int?
   budgetMax  Int?
 
   createdAt  DateTime @default(now())
 
-  answers    SessionAnswer[]
-  results    RecommendationResult[]
-  feedback   Feedback?
+  answers          SessionAnswer[]
+  ratings          SessionRating[]         // ตอนที่ 3 — Likert รายการชอบ
+  decisionRatings  SessionDecisionFactor[] // ตอนที่ 4 — Likert ปัจจัยตัดสินใจ
+  results          RecommendationResult[]
+  feedback         Feedback?
 
   @@map("recommendation_sessions")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  UNSPECIFIED
+}
+
+enum AgeRange {
+  UNDER_20
+  AGE_21_30
+  AGE_31_40
+  AGE_41_50
+  OVER_50
+}
+
+enum Occupation {
+  STUDENT             // นักเรียน/นักศึกษา
+  CIVIL_SERVANT       // ข้าราชการ/พนักงานรัฐวิสาหกิจ
+  COMPANY_EMPLOYEE    // พนักงานบริษัท
+  BUSINESS_OWNER      // ประกอบธุรกิจส่วนตัว/เจ้าของกิจการ
+  HOMEMAKER           // แม่บ้าน/พ่อบ้าน
+  OTHER
+}
+
+enum IncomeRange {
+  UNDER_10K
+  RANGE_10K_20K
+  RANGE_20K_30K
+  RANGE_30K_40K
+  RANGE_40K_50K
+  OVER_50K
+}
+
+enum UsageFrequency {
+  REGULAR              // เคยใช้เป็นประจำ
+  SOMETIMES            // เคยใช้บางครั้ง
+  RARELY               // เคยใช้นาน ๆ ครั้ง
+  NEVER_BUT_INTERESTED // ไม่เคยใช้ แต่สนใจ
 }
 
 model SessionAnswer {
@@ -207,6 +260,44 @@ model Feedback {
 }
 
 // -------------------------------------------------------------------
+// 4.1) ข้อมูลวิจัยเพิ่มเติม — Likert 1..5
+// -------------------------------------------------------------------
+
+model SessionRating {
+  id        String                @id @default(cuid())
+  sessionId String
+  session   RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag                   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  score     Int                   // 1..5 (1=ไม่ชอบ, 5=ชอบมากที่สุด)
+
+  @@unique([sessionId, tagId])
+  @@map("session_ratings")
+}
+
+model DecisionFactor {
+  id        String                  @id @default(cuid())
+  code      String                  @unique // price, pattern_beauty, cultural_meaning, ...
+  nameTh    String
+  sortOrder Int                     @default(0)
+  ratings   SessionDecisionFactor[]
+
+  @@map("decision_factors")
+}
+
+model SessionDecisionFactor {
+  id        String                @id @default(cuid())
+  sessionId String
+  session   RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  factorId  String
+  factor    DecisionFactor        @relation(fields: [factorId], references: [id], onDelete: Cascade)
+  score     Int                   // 1..5 (1=ไม่สำคัญ, 5=สำคัญมากที่สุด)
+
+  @@unique([sessionId, factorId])
+  @@map("session_decision_factors")
+}
+
+// -------------------------------------------------------------------
 // 5) บทความ / เนื้อหาเล่าเรื่อง
 // -------------------------------------------------------------------
 
@@ -216,9 +307,13 @@ model Article {
   slug        String   @unique
   coverUrl    String?
   content     String   @db.Text
+  category    String? // ลวดลาย | ภูมิปัญญา | ช่างทอ | ชุมชน | การแต่งกาย | พิธีกรรมและประเพณี (ไม่บังคับเป็น enum เผื่อแอดมินเพิ่มหมวดใหม่)
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  relatedFabricId String?
+  relatedFabric   Fabric? @relation(fields: [relatedFabricId], references: [id], onDelete: SetNull)
 
   @@map("articles")
 }

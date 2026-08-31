@@ -1,26 +1,43 @@
 @import "tailwindcss";
 
+/* ----- Palette อัตลักษณ์บุรีรัมย์ ----- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-cream: #F5EFE4;      /* พื้นหลัง */
+  --color-indigo: #233F5C;     /* หัวข้อ / ตัวอักษรหลัก (คราม) */
+  --color-brick: #8E2C2C;      /* ปุ่มหลัก (แดงหมาก) */
+  --color-gold: #C08A2E;       /* รายละเอียด / เน้น — ใช้กับพื้นหลัง/เส้นขอบ ไม่ใช่ตัวอักษร (คอนทราสต์ต่ำ) */
+  --color-gold-text: #5F400F;  /* ทองเข้ม — ใช้แทน gold เวลาต้องอ่านเป็นตัวอักษร (คอนทราสต์ 8.2:1) */
+  --color-earth: #5E3F2A;      /* ข้อความรอง (น้ำตาลดิน) เข้มขึ้นเพื่อให้อ่านง่ายสำหรับผู้สูงอายุ */
+  --color-earth-deep: #3F2A17; /* น้ำตาลเข้ม — footer / ขอบ / accent */
+  --color-cream-deep: #EBE1CC; /* พื้นการ์ด / เส้นแบ่ง */
 }
 
+/* ผูก CSS variables ให้ Tailwind ใช้เป็น utility ได้:
+   bg-cream, text-indigo, bg-brick, text-gold, border-earth ฯลฯ
+   และ font-heading / font-body */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--color-cream);
+  --color-cream-deep: var(--color-cream-deep);
+  --color-indigo: var(--color-indigo);
+  --color-brick: var(--color-brick);
+  --color-gold: var(--color-gold);
+  --color-gold-text: var(--color-gold-text);
+  --color-earth: var(--color-earth);
+  --color-earth-deep: var(--color-earth-deep);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* งานคราฟต์ = มุมเหลี่ยม ลดความมนของ Tailwind default บางส่วน */
+/* น้ำหนักตัวอักษรพื้นฐานเข้มขึ้นจาก 400 เป็น 500 — อ่านง่ายขึ้นสำหรับผู้สูงอายุ */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-earth);
+  font-weight: 500;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: #fff;
 }
