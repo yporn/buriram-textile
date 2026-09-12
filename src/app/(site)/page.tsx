@@ -71,49 +71,55 @@ export default async function HomePage() {
   return (
     <>
       <main className="flex-1">
-        {/* ---------- Hero ---------- */}
-        <section className="border-b border-clay-deep">
-          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24 lg:py-28 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="font-heading text-ochre-text tracking-wide text-sm sm:text-base mb-4">
-                ผ้าทอพื้นบ้าน · จังหวัดบุรีรัมย์
-              </p>
-              <h1 className="font-heading text-walnut text-3xl sm:text-4xl lg:text-5xl leading-snug">
-                ค้นหาผ้าทอที่&ldquo;ใช่&rdquo;สำหรับคุณ
-                <br className="hidden sm:block" />
-                ด้วยคำแนะนำที่อธิบายได้
-              </h1>
-              <p className="mt-6 text-base sm:text-lg leading-relaxed text-umber max-w-xl">
-                ระบบแนะนำผ้าทอบุรีรัมย์เฉพาะบุคคล
-                รวมภูมิปัญญาจากชุมชนผู้ทอจริงในจังหวัด
-                ตอบแบบสอบถามเพียงไม่กี่ข้อ
-                แล้วมาเจอผ้าที่ตรงกับโอกาส สไตล์ และงบของคุณ
-              </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <Link
-                  href="/questionnaire"
-                  className="inline-flex items-center justify-center bg-rust text-clay font-medium px-6 py-3 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
-                >
-                  เริ่มค้นหาผ้าที่เหมาะกับฉัน
-                </Link>
-                <Link
-                  href="#featured"
-                  className="inline-flex items-center justify-center border border-walnut text-walnut font-medium px-6 py-3 rounded-sm hover:bg-walnut hover:text-clay transition"
-                >
-                  ดูผ้าตัวอย่าง
-                </Link>
+        {/* ---------- Hero: แบนเนอร์ใหญ่เต็มความกว้าง ---------- */}
+        <section className="relative border-b border-clay-deep">
+          <div className="relative h-120 sm:h-140 lg:h-170 w-full overflow-hidden">
+            <Image
+              src="/hero-fabric.png"
+              alt="ผ้าไหมทอบุรีรัมย์ระยะใกล้ โทนชมพูอมส้ม เห็นลวดลายทอละเอียด"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            {/* scrim ไล่สีน้ำตาลดำจากซ้ายไปขวา ให้ตัวหนังสือฝั่งซ้ายอ่านง่ายบนภาพถ่าย */}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-linear-to-r from-umber-deep/90 via-umber-deep/55 to-umber-deep/10"
+            />
+            <div className="absolute inset-0 flex items-center">
+              <div className="mx-auto max-w-6xl px-6 w-full">
+                <div className="max-w-xl">
+                  <p className="font-heading text-ochre tracking-wide text-sm sm:text-base mb-4">
+                    ผ้าทอพื้นบ้าน · จังหวัดบุรีรัมย์
+                  </p>
+                  <h1 className="font-heading text-clay text-3xl sm:text-4xl lg:text-5xl leading-snug">
+                    ค้นหาผ้าทอที่&ldquo;ใช่&rdquo;สำหรับคุณ
+                    <br className="hidden sm:block" />
+                    ด้วยคำแนะนำที่อธิบายได้
+                  </h1>
+                  <p className="mt-6 text-base sm:text-lg leading-relaxed text-clay/90 max-w-xl">
+                    ระบบแนะนำผ้าทอบุรีรัมย์เฉพาะบุคคล
+                    รวมภูมิปัญญาจากชุมชนผู้ทอจริงในจังหวัด
+                    ตอบแบบสอบถามเพียงไม่กี่ข้อ
+                    แล้วมาเจอผ้าที่ตรงกับโอกาส สไตล์ และงบของคุณ
+                  </p>
+                  <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                    <Link
+                      href="/questionnaire"
+                      className="inline-flex items-center justify-center bg-rust text-clay font-medium px-6 py-3 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
+                    >
+                      เริ่มค้นหาผ้าที่เหมาะกับฉัน
+                    </Link>
+                    <Link
+                      href="#featured"
+                      className="inline-flex items-center justify-center border border-clay text-clay font-medium px-6 py-3 rounded-sm hover:bg-clay hover:text-walnut transition"
+                    >
+                      ดูผ้าตัวอย่าง
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="relative h-64 sm:h-80 lg:h-96 rounded-sm overflow-hidden border border-umber-deep">
-              <Image
-                src="/hero-fabric.png"
-                alt="ผ้าไหมทอบุรีรัมย์ระยะใกล้ โทนชมพูอมส้ม เห็นลวดลายทอละเอียด"
-                fill
-                priority
-                sizes="(min-width: 1024px) 45vw, 100vw"
-                className="object-cover"
-              />
             </div>
           </div>
         </section>

@@ -32,7 +32,19 @@
 /* งานคราฟต์ = มุมเหลี่ยม ลดความมนของ Tailwind default บางส่วน */
 /* น้ำหนักตัวอักษรพื้นฐานเข้มขึ้นจาก 400 เป็น 500 — อ่านง่ายขึ้นสำหรับผู้สูงอายุ */
 body {
-  background: var(--color-clay);
+  /* ลายทอไขว้บาง ๆ (มัดหมี่) ซ้อนบนพื้นขาว ให้กลิ่นอายผ้าทอโดยไม่ทำให้พื้นดูมืดลง */
+  background-color: var(--color-clay);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--color-ochre) 14%, transparent) 0 1px,
+      transparent 1px 22px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, var(--color-rust) 10%, transparent) 0 1px,
+      transparent 1px 22px
+    );
   color: var(--color-umber);
   font-weight: 500;
 }
