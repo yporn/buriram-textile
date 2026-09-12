@@ -65,11 +65,11 @@ export default async function FabricDetailPage({
   const backLabel = sessionId ? "← กลับไปยังผลลัพธ์" : "← ทำแบบสอบถามเพื่อดูผ้าที่เหมาะกับคุณ";
 
   return (
-    <main className="flex-1 bg-cream">
+    <main className="flex-1 bg-clay">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
         <Link
           href={backHref}
-          className="text-sm text-brick underline underline-offset-4 hover:text-indigo"
+          className="text-sm text-rust underline underline-offset-4 hover:text-walnut"
         >
           {backLabel}
         </Link>
@@ -81,17 +81,17 @@ export default async function FabricDetailPage({
           {/* ---------- ข้อมูลหลัก ---------- */}
           <div>
             {fabric.community && (
-              <p className="font-heading text-gold-text text-sm tracking-wide">
+              <p className="font-heading text-ochre-text text-sm tracking-wide">
                 {fabric.community.name} · {fabric.community.district}
               </p>
             )}
-            <h1 className="font-heading text-indigo text-2xl sm:text-3xl mt-2 leading-snug">
+            <h1 className="font-heading text-walnut text-2xl sm:text-3xl mt-2 leading-snug">
               {fabric.name}
             </h1>
-            <p className="font-heading text-brick text-2xl mt-3">
+            <p className="font-heading text-rust text-2xl mt-3">
               ฿{fabric.priceThb.toLocaleString()}
             </p>
-            <p className="text-sm text-earth mt-4 leading-relaxed">
+            <p className="text-sm text-umber mt-4 leading-relaxed">
               {fabric.description}
             </p>
 
@@ -100,12 +100,12 @@ export default async function FabricDetailPage({
               <div className="mt-6 space-y-3">
                 {[...tagsByCategory.entries()].map(([code, { nameTh, tags }]) => (
                   <div key={code}>
-                    <p className="text-xs text-earth mb-1.5">{nameTh}</p>
+                    <p className="text-xs text-umber mb-1.5">{nameTh}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {tags.map((t) => (
                         <span
                           key={t}
-                          className="text-xs px-2.5 py-1 rounded-sm border border-cream-deep text-indigo bg-cream-deep/40"
+                          className="text-xs px-2.5 py-1 rounded-sm border border-clay-deep text-walnut bg-clay-deep/40"
                         >
                           {t}
                         </span>
@@ -119,7 +119,7 @@ export default async function FabricDetailPage({
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/questionnaire"
-                className="bg-brick text-cream font-medium px-6 py-2.5 rounded-sm hover:bg-[#7a2424] transition"
+                className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] transition"
               >
                 ค้นหาผ้าที่เหมาะกับฉัน
               </Link>
@@ -129,14 +129,14 @@ export default async function FabricDetailPage({
 
         {/* ---------- เรื่องราวของผ้า ---------- */}
         {fabric.story && (
-          <section className="mt-12 border-t border-cream-deep pt-8">
-            <p className="font-heading text-gold-text text-sm tracking-wide">
+          <section className="mt-12 border-t border-clay-deep pt-8">
+            <p className="font-heading text-ochre-text text-sm tracking-wide">
               เรื่องเล่าของผ้าผืนนี้
             </p>
-            <h2 className="font-heading text-indigo text-xl sm:text-2xl mt-2 mb-4">
+            <h2 className="font-heading text-walnut text-xl sm:text-2xl mt-2 mb-4">
               ประวัติ ที่มา และภูมิปัญญา
             </h2>
-            <div className="text-sm text-earth leading-relaxed whitespace-pre-line max-w-3xl">
+            <div className="text-sm text-umber leading-relaxed whitespace-pre-line max-w-3xl">
               {fabric.story}
             </div>
           </section>
@@ -144,23 +144,23 @@ export default async function FabricDetailPage({
 
         {/* ---------- ชุมชนผู้ทอ ---------- */}
         {fabric.community && (
-          <section className="mt-12 border-t border-cream-deep pt-8">
-            <p className="font-heading text-gold-text text-sm tracking-wide">
+          <section className="mt-12 border-t border-clay-deep pt-8">
+            <p className="font-heading text-ochre-text text-sm tracking-wide">
               แหล่งผลิต
             </p>
-            <h2 className="font-heading text-indigo text-xl sm:text-2xl mt-2 mb-4">
+            <h2 className="font-heading text-walnut text-xl sm:text-2xl mt-2 mb-4">
               {fabric.community.name}
             </h2>
-            <p className="text-sm text-earth mb-3">
+            <p className="text-sm text-umber mb-3">
               อำเภอ{fabric.community.district} · จังหวัดบุรีรัมย์
             </p>
             {fabric.community.story && (
-              <p className="text-sm text-earth leading-relaxed max-w-3xl whitespace-pre-line">
+              <p className="text-sm text-umber leading-relaxed max-w-3xl whitespace-pre-line">
                 {fabric.community.story}
               </p>
             )}
             {fabric.community.contact && (
-              <p className="text-sm text-earth mt-3">
+              <p className="text-sm text-umber mt-3">
                 ติดต่อ: {fabric.community.contact}
               </p>
             )}

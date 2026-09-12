@@ -12,7 +12,7 @@ export type CategoryWithTags = {
 export type CommunityOption = { id: string; name: string; district: string };
 
 const INPUT_CLASS =
-  "w-full bg-cream border border-cream-deep rounded-sm px-3 py-2 text-indigo focus:outline-none focus:border-earth-deep";
+  "w-full bg-clay border border-clay-deep rounded-sm px-3 py-2 text-walnut focus:outline-none focus:border-umber-deep";
 
 export type FabricFormInitial = {
   name: string;
@@ -156,7 +156,7 @@ export function FabricForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       {/* ---------- ข้อมูลพื้นฐาน ---------- */}
-      <div className="bg-cream border border-cream-deep rounded-sm p-5 space-y-4">
+      <div className="bg-clay border border-clay-deep rounded-sm p-5 space-y-4">
         <Field label="ชื่อผ้า">
           <input
             value={name}
@@ -208,7 +208,7 @@ export function FabricForm({
             </select>
           </Field>
         </div>
-        <label className="flex items-center gap-2 text-sm text-indigo">
+        <label className="flex items-center gap-2 text-sm text-walnut">
           <input
             type="checkbox"
             checked={isPublished}
@@ -219,10 +219,10 @@ export function FabricForm({
       </div>
 
       {/* ---------- รูปภาพ ---------- */}
-      <div className="bg-cream border border-cream-deep rounded-sm p-5">
-        <p className="text-sm text-earth mb-3">รูปหลักของผ้า</p>
+      <div className="bg-clay border border-clay-deep rounded-sm p-5">
+        <p className="text-sm text-umber mb-3">รูปหลักของผ้า</p>
         {imageUrl && (
-          <div className="mb-3 h-40 w-40 bg-cream-deep rounded-sm overflow-hidden">
+          <div className="mb-3 h-40 w-40 bg-clay-deep rounded-sm overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={imageUrl} alt="" className="h-full w-full object-cover" />
           </div>
@@ -233,14 +233,14 @@ export function FabricForm({
           accept="image/jpeg,image/png,image/webp"
           onChange={handleFileChange}
           disabled={uploading}
-          className="text-sm text-earth"
+          className="text-sm text-umber"
         />
-        {uploading && <p className="text-xs text-earth mt-2">กำลังอัปโหลด...</p>}
+        {uploading && <p className="text-xs text-umber mt-2">กำลังอัปโหลด...</p>}
         {imageUrl && !uploading && (
           <button
             type="button"
             onClick={() => setImageUrl(null)}
-            className="block mt-2 text-xs text-brick underline underline-offset-2"
+            className="block mt-2 text-xs text-rust underline underline-offset-2"
           >
             ลบรูปนี้
           </button>
@@ -248,13 +248,13 @@ export function FabricForm({
       </div>
 
       {/* ---------- Tag ---------- */}
-      <div className="bg-cream border border-cream-deep rounded-sm p-5 space-y-5">
-        <p className="text-sm text-earth">
+      <div className="bg-clay border border-clay-deep rounded-sm p-5 space-y-5">
+        <p className="text-sm text-umber">
           แท็กสำหรับระบบแนะนำ (ตรงกับตัวเลือกในแบบสอบถาม)
         </p>
         {categories.map((cat) => (
           <div key={cat.code}>
-            <p className="font-heading text-indigo text-sm mb-2">{cat.nameTh}</p>
+            <p className="font-heading text-walnut text-sm mb-2">{cat.nameTh}</p>
             <div className="flex flex-wrap gap-2">
               {cat.tags.map((t) => {
                 const active = tagIds.includes(t.id);
@@ -266,8 +266,8 @@ export function FabricForm({
                     className={[
                       "text-xs px-3 py-1.5 rounded-sm border transition",
                       active
-                        ? "border-brick bg-brick text-cream"
-                        : "border-cream-deep bg-cream text-earth hover:border-earth-deep",
+                        ? "border-rust bg-rust text-clay"
+                        : "border-clay-deep bg-clay text-umber hover:border-umber-deep",
                     ].join(" ")}
                   >
                     {t.nameTh}
@@ -280,7 +280,7 @@ export function FabricForm({
       </div>
 
       {error && (
-        <p className="text-sm text-brick bg-brick/5 border border-brick/30 rounded-sm px-4 py-3">
+        <p className="text-sm text-rust bg-rust/5 border border-rust/30 rounded-sm px-4 py-3">
           {error}
         </p>
       )}
@@ -289,7 +289,7 @@ export function FabricForm({
         <button
           type="submit"
           disabled={submitting || uploading}
-          className="bg-brick text-cream font-medium px-6 py-2.5 rounded-sm hover:bg-[#7a2424] disabled:opacity-50 transition"
+          className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] disabled:opacity-50 transition"
         >
           {submitting ? "กำลังบันทึก..." : mode === "create" ? "เพิ่มผ้า" : "บันทึกการแก้ไข"}
         </button>
@@ -298,7 +298,7 @@ export function FabricForm({
             type="button"
             onClick={handleDelete}
             disabled={deleting}
-            className="text-brick hover:underline disabled:opacity-50 ml-auto"
+            className="text-rust hover:underline disabled:opacity-50 ml-auto"
           >
             {deleting ? "กำลังลบ..." : "ลบผ้านี้ถาวร"}
           </button>
@@ -311,7 +311,7 @@ export function FabricForm({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-sm text-earth block mb-1.5">{label}</span>
+      <span className="text-sm text-umber block mb-1.5">{label}</span>
       {children}
     </label>
   );

@@ -14,9 +14,9 @@ export function FabricCard({ fabric }: { fabric: FabricCardData }) {
   return (
     <Link
       href={`/fabrics/${fabric.id}`}
-      className="group block bg-cream border border-cream-deep rounded-sm overflow-hidden hover:border-earth-deep transition"
+      className="group block bg-clay border border-clay-deep rounded-sm overflow-hidden hover:border-umber-deep transition"
     >
-      <div className="aspect-4/5 bg-cream-deep relative overflow-hidden">
+      <div className="aspect-4/5 bg-clay-deep relative overflow-hidden">
         {primary ? (
           // ยังไม่ใช้ next/image เพราะ Supabase Storage domain ต้องขึ้น remotePatterns ก่อน
           // eslint-disable-next-line @next/next/no-img-element
@@ -30,19 +30,19 @@ export function FabricCard({ fabric }: { fabric: FabricCardData }) {
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-heading text-indigo text-lg leading-tight">
+        <h3 className="font-heading text-walnut text-lg leading-tight">
           {fabric.name}
         </h3>
         {fabric.community && (
-          <p className="text-xs text-earth mt-1">
+          <p className="text-xs text-umber mt-1">
             {fabric.community.name} · {fabric.community.district}
           </p>
         )}
         <div className="mt-3 flex items-baseline justify-between">
-          <span className="font-heading text-brick text-lg">
+          <span className="font-heading text-rust text-lg">
             ฿{fabric.priceThb.toLocaleString()}
           </span>
-          <span className="text-xs text-indigo group-hover:underline">
+          <span className="text-xs text-walnut group-hover:underline">
             ดูรายละเอียด →
           </span>
         </div>
@@ -56,9 +56,9 @@ export function FabricPlaceholder({ name }: { name: string }) {
   return (
     <div
       aria-hidden
-      className="h-full w-full flex items-center justify-center bg-[repeating-linear-gradient(45deg,var(--color-gold)_0_2px,transparent_2px_10px),repeating-linear-gradient(-45deg,var(--color-earth-deep)_0_1px,transparent_1px_14px)]"
+      className="h-full w-full flex items-center justify-center bg-[repeating-linear-gradient(45deg,var(--color-ochre)_0_2px,transparent_2px_10px),repeating-linear-gradient(-45deg,var(--color-umber-deep)_0_1px,transparent_1px_14px)]"
     >
-      <span className="font-heading text-indigo bg-cream/85 px-3 py-1 rounded-sm text-sm">
+      <span className="font-heading text-walnut bg-clay/85 px-3 py-1 rounded-sm text-sm">
         {name}
       </span>
     </div>

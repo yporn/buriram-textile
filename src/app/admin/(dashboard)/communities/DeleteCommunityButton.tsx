@@ -37,11 +37,11 @@ export function DeleteCommunityButton({
         type="button"
         onClick={handleDelete}
         disabled={deleting}
-        className="text-brick hover:underline disabled:opacity-50 text-sm"
+        className="text-rust hover:underline disabled:opacity-50 text-sm"
       >
         {deleting ? "กำลังลบ..." : "ลบ"}
       </button>
-      {error && <span className="text-xs text-brick text-right max-w-40">{error}</span>}
+      {error && <span className="text-xs text-rust text-right max-w-40">{error}</span>}
     </div>
   );
 }

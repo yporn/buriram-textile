@@ -31,16 +31,16 @@ export default async function StoriesPage({
   const articles = await getArticles(category);
 
   return (
-    <main className="flex-1 bg-cream">
+    <main className="flex-1 bg-clay">
       <div className="mx-auto max-w-5xl px-6 py-10 sm:py-14">
         <header>
-          <p className="font-heading text-gold-text text-sm tracking-wide">
+          <p className="font-heading text-ochre-text text-sm tracking-wide">
             เรื่องราวผ้าทอบุรีรัมย์
           </p>
-          <h1 className="font-heading text-indigo text-2xl sm:text-3xl mt-2 leading-snug">
+          <h1 className="font-heading text-walnut text-2xl sm:text-3xl mt-2 leading-snug">
             ประวัติ ภูมิปัญญา และอัตลักษณ์ผ้าทอ
           </h1>
-          <p className="text-sm text-earth mt-3 leading-relaxed max-w-2xl">
+          <p className="text-sm text-umber mt-3 leading-relaxed max-w-2xl">
             เรื่องเล่าเบื้องหลังลวดลาย เทคนิคการทอ และชุมชนผู้สืบทอดภูมิปัญญาผ้าทอบุรีรัมย์
           </p>
         </header>
@@ -62,16 +62,16 @@ export default async function StoriesPage({
         </nav>
 
         {articles.length === 0 ? (
-          <p className="text-earth italic mt-8">ยังไม่มีบทความในหมวดนี้</p>
+          <p className="text-umber italic mt-8">ยังไม่มีบทความในหมวดนี้</p>
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2">
             {articles.map((a) => (
               <Link
                 key={a.slug}
                 href={`/stories/${a.slug}`}
-                className="group block bg-cream border border-cream-deep rounded-sm overflow-hidden hover:border-earth-deep transition"
+                className="group block bg-clay border border-clay-deep rounded-sm overflow-hidden hover:border-umber-deep transition"
               >
-                <div className="aspect-video bg-cream-deep relative overflow-hidden">
+                <div className="aspect-video bg-clay-deep relative overflow-hidden">
                   {a.coverUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -82,21 +82,21 @@ export default async function StoriesPage({
                   ) : (
                     <div
                       aria-hidden
-                      className="h-full w-full bg-[repeating-linear-gradient(45deg,var(--color-gold)_0_2px,transparent_2px_14px),repeating-linear-gradient(-45deg,var(--color-earth-deep)_0_1px,transparent_1px_18px)]"
+                      className="h-full w-full bg-[repeating-linear-gradient(45deg,var(--color-ochre)_0_2px,transparent_2px_14px),repeating-linear-gradient(-45deg,var(--color-umber-deep)_0_1px,transparent_1px_18px)]"
                     />
                   )}
                 </div>
                 <div className="p-5">
                   {a.category && (
-                    <span className="text-xs text-gold-text tracking-wide">{a.category}</span>
+                    <span className="text-xs text-ochre-text tracking-wide">{a.category}</span>
                   )}
-                  <h2 className="font-heading text-indigo text-lg mt-1 leading-snug">
+                  <h2 className="font-heading text-walnut text-lg mt-1 leading-snug">
                     {a.title}
                   </h2>
-                  <p className="text-sm text-earth mt-2 leading-relaxed">
+                  <p className="text-sm text-umber mt-2 leading-relaxed">
                     {excerpt(a.content)}
                   </p>
-                  <span className="text-xs text-brick mt-3 inline-block group-hover:underline">
+                  <span className="text-xs text-rust mt-3 inline-block group-hover:underline">
                     อ่านต่อ →
                   </span>
                 </div>
@@ -124,8 +124,8 @@ function CategoryPill({
       className={[
         "text-sm px-4 py-1.5 rounded-sm border-2 transition",
         active
-          ? "border-brick bg-brick text-cream"
-          : "border-cream-deep bg-cream text-indigo hover:border-earth-deep",
+          ? "border-rust bg-rust text-clay"
+          : "border-clay-deep bg-clay text-walnut hover:border-umber-deep",
       ].join(" ")}
     >
       {children}

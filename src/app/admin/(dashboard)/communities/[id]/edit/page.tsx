@@ -14,7 +14,7 @@ export default async function EditCommunityPage({
 
   return (
     <div>
-      <h1 className="font-heading text-indigo text-2xl mb-6">แก้ไขชุมชน: {community.name}</h1>
+      <h1 className="font-heading text-walnut text-2xl mb-6">แก้ไขชุมชน: {community.name}</h1>
       <CommunityForm
         mode="edit"
         communityId={community.id}

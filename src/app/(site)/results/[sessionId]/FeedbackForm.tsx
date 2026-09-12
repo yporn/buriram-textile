@@ -58,13 +58,13 @@ export function FeedbackForm({
 
   return (
     <section aria-label="แบบประเมินคำแนะนำ">
-      <p className="font-heading text-gold-text text-sm tracking-wide">
+      <p className="font-heading text-ochre-text text-sm tracking-wide">
         ความคิดเห็นของคุณ
       </p>
-      <h2 className="font-heading text-indigo text-xl sm:text-2xl mt-2">
+      <h2 className="font-heading text-walnut text-xl sm:text-2xl mt-2">
         คำแนะนำนี้ตรงใจไหม?
       </h2>
-      <p className="text-sm text-earth mt-2 leading-relaxed">
+      <p className="text-sm text-umber mt-2 leading-relaxed">
         คำตอบของคุณจะช่วยพัฒนาระบบแนะนำผ้าทอบุรีรัมย์ให้ดีขึ้น
       </p>
 
@@ -87,14 +87,14 @@ export function FeedbackForm({
 
       {isRelevant != null && (
         <div className="mt-5">
-          <label className="text-sm text-earth block mb-2">
+          <label className="text-sm text-umber block mb-2">
             เพิ่มความเห็นเพิ่มเติม (ไม่บังคับ)
           </label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={3}
-            className="w-full bg-cream border border-cream-deep rounded-sm p-3 text-sm text-indigo focus:outline-none focus:border-earth-deep"
+            className="w-full bg-clay border border-clay-deep rounded-sm p-3 text-sm text-walnut focus:outline-none focus:border-umber-deep"
             placeholder="เช่น อยากได้ตัวเลือกโทนสีอื่น ๆ เพิ่ม"
           />
           {commentDirty && (
@@ -102,7 +102,7 @@ export function FeedbackForm({
               type="button"
               onClick={saveComment}
               disabled={status === "saving"}
-              className="mt-2 text-sm border border-indigo text-indigo px-4 py-1.5 rounded-sm hover:bg-indigo hover:text-cream disabled:opacity-50 transition"
+              className="mt-2 text-sm border border-walnut text-walnut px-4 py-1.5 rounded-sm hover:bg-walnut hover:text-clay disabled:opacity-50 transition"
             >
               บันทึกความเห็น
             </button>
@@ -111,12 +111,12 @@ export function FeedbackForm({
       )}
 
       <div className="mt-3 h-5 text-xs">
-        {status === "saving" && <span className="text-earth">กำลังบันทึก...</span>}
+        {status === "saving" && <span className="text-umber">กำลังบันทึก...</span>}
         {status === "saved" && (
-          <span className="text-gold-text">บันทึกคำตอบเรียบร้อย ขอบคุณค่ะ</span>
+          <span className="text-ochre-text">บันทึกคำตอบเรียบร้อย ขอบคุณค่ะ</span>
         )}
         {status === "error" && (
-          <span className="text-brick">
+          <span className="text-rust">
             บันทึกไม่สำเร็จ: {error} — ลองอีกครั้ง
           </span>
         )}
@@ -145,8 +145,8 @@ function FeedbackButton({
       className={[
         "px-6 py-2.5 rounded-sm border-2 font-medium transition",
         active
-          ? "border-brick bg-brick text-cream"
-          : "border-cream-deep bg-cream text-indigo hover:border-earth-deep",
+          ? "border-rust bg-rust text-clay"
+          : "border-clay-deep bg-clay text-walnut hover:border-umber-deep",
         disabled ? "opacity-50 cursor-not-allowed" : "",
       ].join(" ")}
     >

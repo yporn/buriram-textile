@@ -31,28 +31,28 @@ export default async function StoryDetailPage({
   if (!article || !article.isPublished) notFound();
 
   return (
-    <main className="flex-1 bg-cream">
+    <main className="flex-1 bg-clay">
       <div className="mx-auto max-w-3xl px-6 py-8 sm:py-12">
         <Link
           href="/stories"
-          className="text-sm text-brick underline underline-offset-4 hover:text-indigo"
+          className="text-sm text-rust underline underline-offset-4 hover:text-walnut"
         >
           ← เรื่องราวผ้าทอทั้งหมด
         </Link>
 
         <header className="mt-6">
           {article.category && (
-            <p className="font-heading text-gold-text text-sm tracking-wide">
+            <p className="font-heading text-ochre-text text-sm tracking-wide">
               {article.category}
             </p>
           )}
-          <h1 className="font-heading text-indigo text-2xl sm:text-3xl mt-2 leading-snug">
+          <h1 className="font-heading text-walnut text-2xl sm:text-3xl mt-2 leading-snug">
             {article.title}
           </h1>
         </header>
 
         {article.coverUrl && (
-          <div className="mt-6 aspect-video bg-cream-deep rounded-sm overflow-hidden">
+          <div className="mt-6 aspect-video bg-clay-deep rounded-sm overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={article.coverUrl}
@@ -62,18 +62,18 @@ export default async function StoryDetailPage({
           </div>
         )}
 
-        <div className="mt-8 text-sm sm:text-base text-earth leading-relaxed whitespace-pre-line">
+        <div className="mt-8 text-sm sm:text-base text-umber leading-relaxed whitespace-pre-line">
           {article.content}
         </div>
 
         {article.relatedFabric && (
-          <div className="mt-12 border-t border-cream-deep pt-8">
-            <p className="text-xs text-earth mb-3">ผ้าทอที่เกี่ยวข้องกับเรื่องราวนี้</p>
+          <div className="mt-12 border-t border-clay-deep pt-8">
+            <p className="text-xs text-umber mb-3">ผ้าทอที่เกี่ยวข้องกับเรื่องราวนี้</p>
             <Link
               href={`/fabrics/${article.relatedFabric.id}`}
-              className="group flex items-center gap-4 bg-cream-deep/40 border border-cream-deep rounded-sm p-4 hover:border-earth-deep transition"
+              className="group flex items-center gap-4 bg-clay-deep/40 border border-clay-deep rounded-sm p-4 hover:border-umber-deep transition"
             >
-              <div className="h-16 w-16 shrink-0 bg-cream-deep rounded-sm overflow-hidden">
+              <div className="h-16 w-16 shrink-0 bg-clay-deep rounded-sm overflow-hidden">
                 {article.relatedFabric.images[0] ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -84,17 +84,17 @@ export default async function StoryDetailPage({
                 ) : null}
               </div>
               <div>
-                <p className="font-heading text-indigo group-hover:text-brick transition">
+                <p className="font-heading text-walnut group-hover:text-rust transition">
                   {article.relatedFabric.name}
                 </p>
                 {article.relatedFabric.community && (
-                  <p className="text-xs text-earth mt-0.5">
+                  <p className="text-xs text-umber mt-0.5">
                     {article.relatedFabric.community.name} ·{" "}
                     {article.relatedFabric.community.district}
                   </p>
                 )}
               </div>
-              <span className="ml-auto text-sm text-brick group-hover:underline shrink-0">
+              <span className="ml-auto text-sm text-rust group-hover:underline shrink-0">
                 ดูผ้าผืนนี้ →
               </span>
             </Link>

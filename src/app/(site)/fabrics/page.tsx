@@ -40,30 +40,30 @@ export default async function FabricsPage({
   const activeCommunity = communities.find((c) => c.id === communityId);
 
   return (
-    <main className="flex-1 bg-cream">
+    <main className="flex-1 bg-clay">
       <div className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <header>
-          <p className="font-heading text-gold-text text-sm tracking-wide">
+          <p className="font-heading text-ochre-text text-sm tracking-wide">
             ผ้าทอบุรีรัมย์ทั้งหมด
           </p>
-          <h1 className="font-heading text-indigo text-2xl sm:text-3xl mt-2 leading-snug">
+          <h1 className="font-heading text-walnut text-2xl sm:text-3xl mt-2 leading-snug">
             ลายผ้าอัตลักษณ์ 23 อำเภอ
           </h1>
-          <p className="text-sm text-earth mt-3 leading-relaxed max-w-2xl">
+          <p className="text-sm text-umber mt-3 leading-relaxed max-w-2xl">
             รวมผ้าทอพื้นบ้านที่มีในระบบทั้งหมด ไล่ดูเองได้ตามชุมชนผู้ทอ
             หรือให้ระบบช่วยแนะนำเฉพาะสำหรับคุณผ่านแบบสอบถาม
           </p>
         </header>
 
         {/* ---------- ตัวกรองชุมชน ---------- */}
-        <div className="mt-8 flex flex-wrap items-end gap-4 bg-cream-deep/40 border border-cream-deep rounded-sm px-5 py-4">
+        <div className="mt-8 flex flex-wrap items-end gap-4 bg-clay-deep/40 border border-clay-deep rounded-sm px-5 py-4">
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs text-earth tracking-wide">
+            <span className="text-xs text-umber tracking-wide">
               กรองตามชุมชน/อำเภอ
             </span>
             <Suspense
               fallback={
-                <div className="bg-cream border-2 border-cream-deep rounded-sm min-w-64 h-10.5" />
+                <div className="bg-clay border-2 border-clay-deep rounded-sm min-w-64 h-10.5" />
               }
             >
               <CommunityFilterDropdown communities={communities} />
@@ -71,14 +71,14 @@ export default async function FabricsPage({
           </div>
         </div>
 
-        <p className="text-sm text-earth mt-5">
+        <p className="text-sm text-umber mt-5">
           {activeCommunity
             ? `พบผ้าทอจาก${activeCommunity.name} ${fabrics.length} ผืน`
             : `พบผ้าทอทั้งหมด ${fabrics.length} ผืน`}
         </p>
 
         {fabrics.length === 0 ? (
-          <p className="text-earth italic mt-6">ไม่พบผ้าทอในชุมชนนี้</p>
+          <p className="text-umber italic mt-6">ไม่พบผ้าทอในชุมชนนี้</p>
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {fabrics.map((f) => (

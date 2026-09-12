@@ -19,7 +19,7 @@ export function LogoutButton() {
       type="button"
       onClick={handleLogout}
       disabled={loading}
-      className="text-brick hover:underline disabled:opacity-50"
+      className="text-rust hover:underline disabled:opacity-50"
     >
       ออกจากระบบ
     </button>

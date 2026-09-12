@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
-/* ----- Palette อัตลักษณ์บุรีรัมย์ ----- */
+/* ----- Palette แรงบันดาลใจจากดินเผา-อิฐแดง (ปราสาทหินพนมรุ้ง ยามตะวันรอน) พื้นหลังขาวสะอาด ----- */
 :root {
-  --color-cream: #F5EFE4;      /* พื้นหลัง */
-  --color-indigo: #233F5C;     /* หัวข้อ / ตัวอักษรหลัก (คราม) */
-  --color-brick: #8E2C2C;      /* ปุ่มหลัก (แดงหมาก) */
-  --color-gold: #C08A2E;       /* รายละเอียด / เน้น — ใช้กับพื้นหลัง/เส้นขอบ ไม่ใช่ตัวอักษร (คอนทราสต์ต่ำ) */
-  --color-gold-text: #5F400F;  /* ทองเข้ม — ใช้แทน gold เวลาต้องอ่านเป็นตัวอักษร (คอนทราสต์ 8.2:1) */
-  --color-earth: #5E3F2A;      /* ข้อความรอง (น้ำตาลดิน) เข้มขึ้นเพื่อให้อ่านง่ายสำหรับผู้สูงอายุ */
-  --color-earth-deep: #3F2A17; /* น้ำตาลเข้ม — footer / ขอบ / accent */
-  --color-cream-deep: #EBE1CC; /* พื้นการ์ด / เส้นแบ่ง */
+  --color-clay: #FFFFFF;        /* พื้นหลัง — ขาว */
+  --color-clay-deep: #F2E6D2;   /* พื้นการ์ด / เส้นแบ่ง — ดินเผาอ่อนมาก ใช้แยกพื้นที่บนพื้นขาว */
+  --color-walnut: #3A2418;      /* หัวข้อ / ตัวอักษรหลัก (น้ำตาลไม้เข้ม) */
+  --color-rust: #7A3016;        /* ปุ่มหลัก / ราคา (สีอิฐแดงเผาไฟ) */
+  --color-ochre: #C99A3E;       /* รายละเอียด / เน้น — สีทองผุ ใช้กับพื้นหลัง/เส้นขอบ ไม่ใช่ตัวอักษร (คอนทราสต์ต่ำ) */
+  --color-ochre-text: #5C3D10;  /* น้ำตาลทองเข้ม — ใช้แทน ochre เวลาต้องอ่านเป็นตัวอักษร (คอนทราสต์ ~5.8:1) */
+  --color-umber: #4A2E1D;       /* ข้อความรอง (น้ำตาลดินเผา) เข้มพอให้อ่านง่ายสำหรับผู้สูงอายุ */
+  --color-umber-deep: #241408;  /* น้ำตาลดำ — footer / ขอบ / accent */
 }
 
 /* ผูก CSS variables ให้ Tailwind ใช้เป็น utility ได้:
-   bg-cream, text-indigo, bg-brick, text-gold, border-earth ฯลฯ
+   bg-clay, text-walnut, bg-rust, text-ochre, border-umber ฯลฯ
    และ font-heading / font-body */
 @theme inline {
-  --color-cream: var(--color-cream);
-  --color-cream-deep: var(--color-cream-deep);
-  --color-indigo: var(--color-indigo);
-  --color-brick: var(--color-brick);
-  --color-gold: var(--color-gold);
-  --color-gold-text: var(--color-gold-text);
-  --color-earth: var(--color-earth);
-  --color-earth-deep: var(--color-earth-deep);
+  --color-clay: var(--color-clay);
+  --color-clay-deep: var(--color-clay-deep);
+  --color-walnut: var(--color-walnut);
+  --color-rust: var(--color-rust);
+  --color-ochre: var(--color-ochre);
+  --color-ochre-text: var(--color-ochre-text);
+  --color-umber: var(--color-umber);
+  --color-umber-deep: var(--color-umber-deep);
 
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
@@ -32,12 +32,12 @@
 /* งานคราฟต์ = มุมเหลี่ยม ลดความมนของ Tailwind default บางส่วน */
 /* น้ำหนักตัวอักษรพื้นฐานเข้มขึ้นจาก 400 เป็น 500 — อ่านง่ายขึ้นสำหรับผู้สูงอายุ */
 body {
-  background: var(--color-cream);
-  color: var(--color-earth);
+  background: var(--color-clay);
+  color: var(--color-umber);
   font-weight: 500;
 }
 
 ::selection {
-  background: var(--color-gold);
+  background: var(--color-ochre);
   color: #fff;
 }

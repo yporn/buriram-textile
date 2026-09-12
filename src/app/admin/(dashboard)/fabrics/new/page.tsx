@@ -24,7 +24,7 @@ export default async function NewFabricPage() {
 
   return (
     <div>
-      <h1 className="font-heading text-indigo text-2xl mb-6">เพิ่มผ้าใหม่</h1>
+      <h1 className="font-heading text-walnut text-2xl mb-6">เพิ่มผ้าใหม่</h1>
       <FabricForm mode="create" categories={categories} communities={communities} />
     </div>
   );

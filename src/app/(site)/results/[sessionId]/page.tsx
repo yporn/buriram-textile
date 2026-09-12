@@ -47,18 +47,18 @@ export default async function ResultsPage({
   const total = session.results.length;
 
   return (
-    <main className="flex-1 bg-cream">
+    <main className="flex-1 bg-clay">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-14">
         <header>
-          <p className="font-heading text-gold-text text-sm tracking-wide">
+          <p className="font-heading text-ochre-text text-sm tracking-wide">
             ผลการแนะนำเฉพาะบุคคล
           </p>
-          <h1 className="font-heading text-indigo text-2xl sm:text-3xl mt-2 leading-snug">
+          <h1 className="font-heading text-walnut text-2xl sm:text-3xl mt-2 leading-snug">
             {total > 0
               ? `จากคำตอบของคุณ พบผ้าทอที่เหมาะสม ${total} ผืน`
               : "ยังไม่มีผ้าที่จับคู่ได้จากคำตอบของคุณ"}
           </h1>
-          <p className="text-sm text-earth mt-3 leading-relaxed">
+          <p className="text-sm text-umber mt-3 leading-relaxed">
             แต่ละคะแนนคำนวณจากความตรงรายมิติที่คุณเลือกไว้ในแบบสอบถาม
             ระบบแสดงเหตุผลใต้ผ้าแต่ละผืนเพื่อความโปร่งใส
           </p>
@@ -85,7 +85,7 @@ export default async function ResultsPage({
           </div>
         )}
 
-        <div className="mt-12 border-t border-cream-deep pt-8">
+        <div className="mt-12 border-t border-clay-deep pt-8">
           <FeedbackForm
             sessionId={sessionId}
             initialIsRelevant={session.feedback?.isRelevant ?? null}
@@ -96,7 +96,7 @@ export default async function ResultsPage({
         <div className="mt-10 text-center">
           <Link
             href="/questionnaire"
-            className="text-sm text-brick underline underline-offset-4 hover:text-indigo"
+            className="text-sm text-rust underline underline-offset-4 hover:text-walnut"
           >
             ← ทำแบบสอบถามใหม่อีกครั้ง
           </Link>
@@ -135,10 +135,10 @@ function ResultCard({
   const scorePercent = Math.round(score * 100);
 
   return (
-    <article className="bg-cream border border-cream-deep rounded-sm overflow-hidden grid sm:grid-cols-[180px_1fr]">
+    <article className="bg-clay border border-clay-deep rounded-sm overflow-hidden grid sm:grid-cols-[180px_1fr]">
       {/* ---------- รูปผ้า ---------- */}
-      <div className="relative bg-cream-deep aspect-4/5 sm:aspect-auto">
-        <span className="absolute top-2 left-2 bg-earth-deep text-cream font-heading text-sm px-2 py-1 rounded-sm z-10">
+      <div className="relative bg-clay-deep aspect-4/5 sm:aspect-auto">
+        <span className="absolute top-2 left-2 bg-umber-deep text-clay font-heading text-sm px-2 py-1 rounded-sm z-10">
           #{rank}
         </span>
         {primary ? (
@@ -157,15 +157,15 @@ function ResultCard({
       <div className="p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <h2 className="font-heading text-indigo text-lg sm:text-xl leading-tight">
+            <h2 className="font-heading text-walnut text-lg sm:text-xl leading-tight">
               {fabric.name}
             </h2>
             {fabric.community && (
-              <p className="text-xs text-earth mt-1">
+              <p className="text-xs text-umber mt-1">
                 {fabric.community.name} · {fabric.community.district}
               </p>
             )}
-            <p className="font-heading text-brick text-lg mt-2">
+            <p className="font-heading text-rust text-lg mt-2">
               ฿{fabric.priceThb.toLocaleString()}
             </p>
           </div>
@@ -174,8 +174,8 @@ function ResultCard({
           </div>
         </div>
 
-        <div className="mt-4 border-t border-cream-deep pt-3">
-          <p className="text-xs text-earth mb-2">เหตุผลที่แนะนำ:</p>
+        <div className="mt-4 border-t border-clay-deep pt-3">
+          <p className="text-xs text-umber mb-2">เหตุผลที่แนะนำ:</p>
           <ul className="space-y-1.5">
             {dimensions.map((d) => (
               <DimensionRow key={d.categoryCode} dim={d} />
@@ -186,7 +186,7 @@ function ResultCard({
         <div className="mt-4 flex items-center gap-4">
           <Link
             href={`/fabrics/${fabric.id}?session=${sessionId}`}
-            className="text-sm text-brick font-medium underline underline-offset-4 hover:text-indigo"
+            className="text-sm text-rust font-medium underline underline-offset-4 hover:text-walnut"
           >
             ดูรายละเอียด →
           </Link>
@@ -197,16 +197,16 @@ function ResultCard({
 }
 
 function ScoreBadge({ score, label }: { score: number; label: MatchDetail["label"] }) {
-  // สีพื้นหลัง + ตัวอักษรเลือกให้คอนทราสต์ผ่านเกณฑ์อ่านง่าย (AA ขึ้นไป) แม้บนพื้นสีทอง
+  // สีพื้นหลัง + ตัวอักษรเลือกให้คอนทราสต์ผ่านเกณฑ์อ่านง่าย (AA ขึ้นไป) แม้บนพื้นสีทองผุ
   const tone =
     label === "เหมาะมาก"
-      ? "bg-brick text-cream"
+      ? "bg-rust text-clay"
       : label === "เหมาะ"
-      ? "bg-gold text-earth-deep"
-      : "bg-earth text-cream";
+      ? "bg-ochre text-umber-deep"
+      : "bg-umber text-clay";
   return (
     <div className="flex flex-col items-end gap-1">
-      <span className="font-heading text-indigo text-2xl leading-none">
+      <span className="font-heading text-walnut text-2xl leading-none">
         {score}%
       </span>
       <span className={`text-xs font-semibold px-2 py-0.5 rounded-sm ${tone}`}>
@@ -223,7 +223,7 @@ function DimensionRow({ dim }: { dim: DimensionMatch }) {
       <span aria-hidden className="mt-0.5 shrink-0">
         {icon}
       </span>
-      <span className="text-earth leading-relaxed">{dim.reasonTh}</span>
+      <span className="text-umber leading-relaxed">{dim.reasonTh}</span>
     </li>
   );
 }
@@ -231,18 +231,18 @@ function DimensionRow({ dim }: { dim: DimensionMatch }) {
 function iconForLevel(level: MatchLevel) {
   if (level === "full")
     return (
-      <span className="inline-block h-4 w-4 rounded-full bg-brick text-cream text-[10px] leading-4 text-center">
+      <span className="inline-block h-4 w-4 rounded-full bg-rust text-clay text-[10px] leading-4 text-center">
         ✓
       </span>
     );
   if (level === "partial")
     return (
-      <span className="inline-block h-4 w-4 rounded-full bg-gold text-cream text-[10px] leading-4 text-center">
+      <span className="inline-block h-4 w-4 rounded-full bg-ochre text-clay text-[10px] leading-4 text-center">
         ~
       </span>
     );
   return (
-    <span className="inline-block h-4 w-4 rounded-full border border-earth/50 text-earth text-[10px] leading-4 text-center">
+    <span className="inline-block h-4 w-4 rounded-full border border-umber/50 text-umber text-[10px] leading-4 text-center">
       ×
     </span>
   );
@@ -254,9 +254,9 @@ function FabricPlaceholder({ name }: { name: string }) {
   return (
     <div
       aria-hidden
-      className="h-full w-full flex items-center justify-center bg-[repeating-linear-gradient(45deg,var(--color-gold)_0_2px,transparent_2px_10px),repeating-linear-gradient(-45deg,var(--color-earth-deep)_0_1px,transparent_1px_14px)]"
+      className="h-full w-full flex items-center justify-center bg-[repeating-linear-gradient(45deg,var(--color-ochre)_0_2px,transparent_2px_10px),repeating-linear-gradient(-45deg,var(--color-umber-deep)_0_1px,transparent_1px_14px)]"
     >
-      <span className="font-heading text-indigo bg-cream/85 px-2 py-1 rounded-sm text-xs">
+      <span className="font-heading text-walnut bg-clay/85 px-2 py-1 rounded-sm text-xs">
         {name}
       </span>
     </div>
@@ -265,15 +265,15 @@ function FabricPlaceholder({ name }: { name: string }) {
 
 function EmptyState({ sessionId }: { sessionId: string }) {
   return (
-    <div className="mt-8 border border-cream-deep bg-cream-deep/40 rounded-sm p-6 sm:p-8 text-center">
-      <p className="text-earth leading-relaxed">
+    <div className="mt-8 border border-clay-deep bg-clay-deep/40 rounded-sm p-6 sm:p-8 text-center">
+      <p className="text-umber leading-relaxed">
         เนื่องจากคำตอบของคุณยังไม่มีข้อมูลความชอบเพียงพอ ระบบจึงยังจับคู่ผ้าไม่ได้
         <br />
         ลองทำแบบสอบถามใหม่ แล้วให้คะแนนความชอบสัก 2-3 รายการดูนะ
       </p>
-      <p className="text-xs text-earth mt-4">
+      <p className="text-xs text-umber mt-4">
         session id:{" "}
-        <code className="bg-cream px-1.5 py-0.5 border border-cream-deep rounded-sm">
+        <code className="bg-clay px-1.5 py-0.5 border border-clay-deep rounded-sm">
           {sessionId}
         </code>
       </p>

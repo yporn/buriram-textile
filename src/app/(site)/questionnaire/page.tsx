@@ -49,18 +49,18 @@ export default async function QuestionnairePage() {
   if (categories.length === 0 || factors.length === 0) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-20 text-center">
-        <h1 className="font-heading text-indigo text-2xl mb-4">
+        <h1 className="font-heading text-walnut text-2xl mb-4">
           ยังไม่มีคำถามในฐานข้อมูล
         </h1>
-        <p className="text-earth">
-          กรุณารัน <code className="text-brick">npx prisma db seed</code> ก่อน
+        <p className="text-umber">
+          กรุณารัน <code className="text-rust">npx prisma db seed</code> ก่อน
         </p>
       </main>
     );
   }
 
   return (
-    <main className="flex-1 bg-cream">
+    <main className="flex-1 bg-clay">
       <QuestionnaireFlow categories={categories} factors={factors} />
     </main>
   );

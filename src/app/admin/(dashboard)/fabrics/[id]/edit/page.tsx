@@ -41,7 +41,7 @@ export default async function EditFabricPage({
 
   return (
     <div>
-      <h1 className="font-heading text-indigo text-2xl mb-6">แก้ไขผ้า: {fabric.name}</h1>
+      <h1 className="font-heading text-walnut text-2xl mb-6">แก้ไขผ้า: {fabric.name}</h1>
       <FabricForm
         mode="edit"
         fabricId={fabric.id}

@@ -16,7 +16,7 @@ export function FabricGallery({
 
   return (
     <div>
-      <div className="aspect-4/5 bg-cream-deep rounded-sm overflow-hidden">
+      <div className="aspect-4/5 bg-clay-deep rounded-sm overflow-hidden">
         {active ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -41,8 +41,8 @@ export function FabricGallery({
               className={[
                 "aspect-square rounded-sm overflow-hidden border-2 transition",
                 i === activeIndex
-                  ? "border-brick"
-                  : "border-cream-deep hover:border-earth-deep",
+                  ? "border-rust"
+                  : "border-clay-deep hover:border-umber-deep",
               ].join(" ")}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -63,9 +63,9 @@ function FabricPlaceholder({ name }: { name: string }) {
   return (
     <div
       aria-hidden
-      className="h-full w-full flex items-center justify-center bg-[repeating-linear-gradient(45deg,var(--color-gold)_0_2px,transparent_2px_14px),repeating-linear-gradient(-45deg,var(--color-earth-deep)_0_1px,transparent_1px_18px)]"
+      className="h-full w-full flex items-center justify-center bg-[repeating-linear-gradient(45deg,var(--color-ochre)_0_2px,transparent_2px_14px),repeating-linear-gradient(-45deg,var(--color-umber-deep)_0_1px,transparent_1px_18px)]"
     >
-      <span className="font-heading text-indigo bg-cream/85 px-3 py-1 rounded-sm text-sm">
+      <span className="font-heading text-walnut bg-clay/85 px-3 py-1 rounded-sm text-sm">
         {name}
       </span>
     </div>

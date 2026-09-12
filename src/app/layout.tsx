@@ -30,7 +30,7 @@ export default function RootLayout({
       lang="th"
       className={`${heading.variable} ${body.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-cream text-earth font-body">
+      <body className="min-h-full flex flex-col bg-clay text-umber font-body">
         {children}
       </body>
     </html>

@@ -49,14 +49,14 @@ export function CommunityFilterDropdown({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center justify-between gap-3 bg-cream border-2 border-cream-deep rounded-sm pl-3.5 pr-3 py-2.5 text-sm text-indigo w-full sm:w-96 cursor-pointer hover:border-earth-deep focus:outline-none focus:border-brick transition"
+        className="flex items-center justify-between gap-3 bg-clay border-2 border-clay-deep rounded-sm pl-3.5 pr-3 py-2.5 text-sm text-walnut w-full sm:w-96 cursor-pointer hover:border-umber-deep focus:outline-none focus:border-rust transition"
       >
         <span className="truncate">{label}</span>
         <svg
           aria-hidden
           viewBox="0 0 20 20"
           fill="none"
-          className={`h-4 w-4 text-earth-deep shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 text-umber-deep shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         >
           <path
             d="M5 7.5L10 12.5L15 7.5"
@@ -71,7 +71,7 @@ export function CommunityFilterDropdown({
       {open && (
         <ul
           role="listbox"
-          className="absolute z-20 mt-1.5 w-full sm:w-max sm:min-w-full sm:max-w-md max-h-96 overflow-y-auto bg-cream border-2 border-cream-deep rounded-sm shadow-lg py-1"
+          className="absolute z-20 mt-1.5 w-full sm:w-max sm:min-w-full sm:max-w-md max-h-96 overflow-y-auto bg-clay border-2 border-clay-deep rounded-sm shadow-lg py-1"
         >
           <ListOption active={selectedId === ""} onClick={() => select("")}>
             ทุกชุมชน
@@ -107,12 +107,12 @@ function ListOption({
         onClick={onClick}
         className={[
           "w-full text-left pl-3.5 pr-5 py-2.5 text-sm leading-snug transition flex items-start gap-2",
-          active ? "bg-brick/10 text-brick font-medium" : "text-indigo hover:bg-cream-deep/60",
+          active ? "bg-rust/10 text-rust font-medium" : "text-walnut hover:bg-clay-deep/60",
         ].join(" ")}
       >
         <span
           aria-hidden
-          className={`h-1.5 w-1.5 rounded-full shrink-0 mt-1.5 ${active ? "bg-brick" : "bg-transparent"}`}
+          className={`h-1.5 w-1.5 rounded-full shrink-0 mt-1.5 ${active ? "bg-rust" : "bg-transparent"}`}
         />
         <span className="whitespace-normal">{children}</span>
       </button>

@@ -6,26 +6,26 @@ export default function AdminDashboardLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      <header className="border-b border-cream-deep bg-cream">
+      <header className="border-b border-clay-deep bg-clay">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 py-4 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-baseline gap-3">
-            <Link href="/admin" className="font-heading text-indigo text-lg">
+            <Link href="/admin" className="font-heading text-walnut text-lg">
               ระบบจัดการ · ผ้าทอบุรีรัมย์
             </Link>
           </div>
           <nav className="flex items-center gap-5 text-sm">
-            <Link href="/admin" className="text-indigo hover:text-brick">
+            <Link href="/admin" className="text-walnut hover:text-rust">
               ผ้าทอ
             </Link>
-            <Link href="/admin/communities" className="text-indigo hover:text-brick">
+            <Link href="/admin/communities" className="text-walnut hover:text-rust">
               ชุมชน
             </Link>
-            <Link href="/admin/articles" className="text-indigo hover:text-brick">
+            <Link href="/admin/articles" className="text-walnut hover:text-rust">
               บทความ
             </Link>
             <Link
               href="/"
-              className="text-earth hover:text-brick"
+              className="text-umber hover:text-rust"
               target="_blank"
             >
               ดูหน้าเว็บ ↗

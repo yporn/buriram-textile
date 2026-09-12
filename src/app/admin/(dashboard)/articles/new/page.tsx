@@ -13,7 +13,7 @@ export default async function NewArticlePage() {
 
   return (
     <div>
-      <h1 className="font-heading text-indigo text-2xl mb-6">เพิ่มบทความใหม่</h1>
+      <h1 className="font-heading text-walnut text-2xl mb-6">เพิ่มบทความใหม่</h1>
       <ArticleForm mode="create" fabrics={fabrics} />
     </div>
   );

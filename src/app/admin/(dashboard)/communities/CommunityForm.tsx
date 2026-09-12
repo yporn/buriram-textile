@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const INPUT_CLASS =
-  "w-full bg-cream border border-cream-deep rounded-sm px-3 py-2 text-indigo focus:outline-none focus:border-earth-deep";
+  "w-full bg-clay border border-clay-deep rounded-sm px-3 py-2 text-walnut focus:outline-none focus:border-umber-deep";
 
 export type CommunityFormInitial = {
   name: string;
@@ -60,7 +60,7 @@ export function CommunityForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
-      <div className="bg-cream border border-cream-deep rounded-sm p-5 space-y-4">
+      <div className="bg-clay border border-clay-deep rounded-sm p-5 space-y-4">
         <Field label="ชื่อชุมชน">
           <input
             value={name}
@@ -95,7 +95,7 @@ export function CommunityForm({
       </div>
 
       {error && (
-        <p className="text-sm text-brick bg-brick/5 border border-brick/30 rounded-sm px-4 py-3">
+        <p className="text-sm text-rust bg-rust/5 border border-rust/30 rounded-sm px-4 py-3">
           {error}
         </p>
       )}
@@ -103,7 +103,7 @@ export function CommunityForm({
       <button
         type="submit"
         disabled={submitting}
-        className="bg-brick text-cream font-medium px-6 py-2.5 rounded-sm hover:bg-[#7a2424] disabled:opacity-50 transition"
+        className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] disabled:opacity-50 transition"
       >
         {submitting ? "กำลังบันทึก..." : mode === "create" ? "เพิ่มชุมชน" : "บันทึกการแก้ไข"}
       </button>
@@ -114,7 +114,7 @@ export function CommunityForm({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-sm text-earth block mb-1.5">{label}</span>
+      <span className="text-sm text-umber block mb-1.5">{label}</span>
       {children}
     </label>
   );

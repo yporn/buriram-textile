@@ -269,7 +269,7 @@ export function QuestionnaireFlow({
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-12">
       <ProgressBar current={part + 1} total={PART_TITLES.length} />
-      <h1 className="font-heading text-indigo text-xl sm:text-2xl mt-6 leading-snug">
+      <h1 className="font-heading text-walnut text-xl sm:text-2xl mt-6 leading-snug">
         {PART_TITLES[part]}
       </h1>
 
@@ -301,7 +301,7 @@ export function QuestionnaireFlow({
       </div>
 
       {submitError && (
-        <p className="mt-6 text-sm text-brick bg-brick/5 border border-brick/30 rounded-sm px-4 py-3">
+        <p className="mt-6 text-sm text-rust bg-rust/5 border border-rust/30 rounded-sm px-4 py-3">
           ส่งข้อมูลไม่สำเร็จ: {submitError} — ลองกดส่งอีกครั้ง
         </p>
       )}
@@ -311,7 +311,7 @@ export function QuestionnaireFlow({
           type="button"
           onClick={back}
           disabled={part === 0 || submitting}
-          className="text-sm text-earth hover:text-indigo disabled:opacity-40 disabled:cursor-not-allowed"
+          className="text-sm text-umber hover:text-walnut disabled:opacity-40 disabled:cursor-not-allowed"
         >
           ← ตอนก่อนหน้า
         </button>
@@ -319,7 +319,7 @@ export function QuestionnaireFlow({
           type="button"
           onClick={next}
           disabled={submitting}
-          className="bg-brick text-cream font-medium px-6 py-2.5 rounded-sm hover:bg-[#7a2424] disabled:bg-earth/40 disabled:cursor-not-allowed transition"
+          className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] disabled:bg-umber/40 disabled:cursor-not-allowed transition"
         >
           {isLast
             ? submitting
@@ -454,7 +454,7 @@ function PartPreferences({
       <div className="space-y-6">
         {categories.map((cat) => (
           <div key={cat.code}>
-            <p className="font-heading text-earth-deep text-sm mb-3">
+            <p className="font-heading text-umber-deep text-sm mb-3">
               {cat.nameTh}
             </p>
             <div className="space-y-2">
@@ -516,13 +516,13 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
   const pct = Math.round((current / total) * 100);
   return (
     <div>
-      <div className="flex justify-between text-xs text-earth mb-2">
+      <div className="flex justify-between text-xs text-umber mb-2">
         <span>ตอนที่ {current} จาก {total}</span>
         <span>{pct}%</span>
       </div>
-      <div className="h-2 w-full bg-cream-deep rounded-sm overflow-hidden">
+      <div className="h-2 w-full bg-clay-deep rounded-sm overflow-hidden">
         <div
-          className="h-full bg-brick transition-all duration-300"
+          className="h-full bg-rust transition-all duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -540,12 +540,12 @@ function QuestionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-cream border border-cream-deep rounded-sm p-5 sm:p-6">
+    <div className="bg-clay border border-clay-deep rounded-sm p-5 sm:p-6">
       <div className="mb-4">
-        <p className="font-heading text-indigo text-base sm:text-lg leading-snug">
+        <p className="font-heading text-walnut text-base sm:text-lg leading-snug">
           {label}
         </p>
-        {hint && <p className="text-xs text-earth mt-1">{hint}</p>}
+        {hint && <p className="text-xs text-umber mt-1">{hint}</p>}
       </div>
       {children}
     </div>
@@ -573,8 +573,8 @@ function RadioGroup<T extends string>({
             className={[
               "flex items-center gap-3 p-3 rounded-sm border-2 cursor-pointer transition",
               checked
-                ? "border-brick bg-brick/5"
-                : "border-cream-deep hover:border-earth-deep",
+                ? "border-rust bg-rust/5"
+                : "border-clay-deep hover:border-umber-deep",
             ].join(" ")}
           >
             <input
@@ -589,12 +589,12 @@ function RadioGroup<T extends string>({
               aria-hidden
               className={[
                 "h-4 w-4 rounded-full border-2 shrink-0 flex items-center justify-center",
-                checked ? "border-brick" : "border-earth/50",
+                checked ? "border-rust" : "border-umber/50",
               ].join(" ")}
             >
-              {checked && <span className="h-2 w-2 rounded-full bg-brick" />}
+              {checked && <span className="h-2 w-2 rounded-full bg-rust" />}
             </span>
-            <span className="text-sm text-indigo">{opt.label}</span>
+            <span className="text-sm text-walnut">{opt.label}</span>
           </label>
         );
       })}
@@ -624,8 +624,8 @@ function CheckboxGroup({
             className={[
               "flex items-center gap-3 p-3 rounded-sm border-2 cursor-pointer transition",
               checked
-                ? "border-brick bg-brick/5"
-                : "border-cream-deep hover:border-earth-deep",
+                ? "border-rust bg-rust/5"
+                : "border-clay-deep hover:border-umber-deep",
             ].join(" ")}
           >
             <input
@@ -638,13 +638,13 @@ function CheckboxGroup({
               aria-hidden
               className={[
                 "h-4 w-4 border-2 shrink-0 flex items-center justify-center",
-                checked ? "border-brick bg-brick" : "border-earth/50",
+                checked ? "border-rust bg-rust" : "border-umber/50",
               ].join(" ")}
             >
               {checked && (
                 <svg
                   viewBox="0 0 12 12"
-                  className="h-3 w-3 text-cream"
+                  className="h-3 w-3 text-clay"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -653,7 +653,7 @@ function CheckboxGroup({
                 </svg>
               )}
             </span>
-            <span className="text-sm text-indigo">{opt.label}</span>
+            <span className="text-sm text-walnut">{opt.label}</span>
           </label>
         );
       })}
@@ -673,8 +673,8 @@ function LikertRow({
   onChange: (score: number) => void;
 }) {
   return (
-    <div className="border-b border-cream-deep pb-3 last:border-0 last:pb-0">
-      <p className="text-sm text-indigo mb-2">{label}</p>
+    <div className="border-b border-clay-deep pb-3 last:border-0 last:pb-0">
+      <p className="text-sm text-walnut mb-2">{label}</p>
       <div className="grid grid-cols-5 gap-1.5">
         {options.map((o) => {
           const checked = value === o.score;
@@ -687,8 +687,8 @@ function LikertRow({
               className={[
                 "px-1 py-2 rounded-sm border text-xs sm:text-sm leading-tight transition",
                 checked
-                  ? "border-brick bg-brick text-cream"
-                  : "border-cream-deep bg-cream text-earth hover:border-earth-deep",
+                  ? "border-rust bg-rust text-clay"
+                  : "border-clay-deep bg-clay text-umber hover:border-umber-deep",
               ].join(" ")}
               title={o.label}
             >
@@ -719,16 +719,16 @@ function SubmittedPanel({
 }) {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10 sm:py-14">
-      <div className="border border-cream-deep bg-cream-deep/40 p-5 sm:p-8 rounded-sm">
-        <p className="font-heading text-gold-text text-sm tracking-wide">
+      <div className="border border-clay-deep bg-clay-deep/40 p-5 sm:p-8 rounded-sm">
+        <p className="font-heading text-ochre-text text-sm tracking-wide">
           บันทึกคำตอบเรียบร้อย
         </p>
-        <h2 className="font-heading text-indigo text-2xl sm:text-3xl mt-2">
+        <h2 className="font-heading text-walnut text-2xl sm:text-3xl mt-2">
           ระบบวิเคราะห์เสร็จแล้ว
         </h2>
-        <p className="text-sm text-earth mt-3 leading-relaxed">
+        <p className="text-sm text-umber mt-3 leading-relaxed">
           แนะนำผ้าให้ทั้งหมด {resultCount} ผืน · session id{" "}
-          <code className="text-xs bg-cream px-1.5 py-0.5 border border-cream-deep rounded-sm">
+          <code className="text-xs bg-clay px-1.5 py-0.5 border border-clay-deep rounded-sm">
             {sessionId}
           </code>
         </p>
@@ -737,26 +737,26 @@ function SubmittedPanel({
           <button
             type="button"
             onClick={onGoResults}
-            className="bg-brick text-cream font-medium px-6 py-3 rounded-sm hover:bg-[#7a2424] transition"
+            className="bg-rust text-clay font-medium px-6 py-3 rounded-sm hover:bg-[#5C230F] transition"
           >
             ดูผลการแนะนำ →
           </button>
           <button
             type="button"
             onClick={onReset}
-            className="border border-indigo text-indigo font-medium px-6 py-3 rounded-sm hover:bg-indigo hover:text-cream transition"
+            className="border border-walnut text-walnut font-medium px-6 py-3 rounded-sm hover:bg-walnut hover:text-clay transition"
           >
             เริ่มทำแบบสอบถามใหม่
           </button>
           <Link
             href="/"
-            className="text-sm text-earth self-center underline underline-offset-4 hover:text-brick"
+            className="text-sm text-umber self-center underline underline-offset-4 hover:text-rust"
           >
             กลับหน้าแรก
           </Link>
         </div>
 
-        <p className="text-xs text-earth mt-4">
+        <p className="text-xs text-umber mt-4">
           หมายเหตุ: หน้า <code>/results/{sessionId}</code>{" "}
           จะพร้อมใช้งานในงานถัดไป (งาน 4) ตอนนี้จะเห็นเป็น 404
         </p>

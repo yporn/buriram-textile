@@ -41,13 +41,13 @@ export function FabricRowActions({
         className={[
           "text-xs font-medium px-2 py-1 rounded-sm w-fit transition disabled:opacity-50",
           isPublished
-            ? "bg-brick/10 text-brick hover:bg-brick/20"
-            : "bg-earth/10 text-earth hover:bg-earth/20",
+            ? "bg-rust/10 text-rust hover:bg-rust/20"
+            : "bg-umber/10 text-umber hover:bg-umber/20",
         ].join(" ")}
       >
         {isPublished ? "เผยแพร่อยู่" : "ซ่อนอยู่"}
       </button>
-      {error && <span className="text-xs text-brick">{error}</span>}
+      {error && <span className="text-xs text-rust">{error}</span>}
     </div>
   );
 }

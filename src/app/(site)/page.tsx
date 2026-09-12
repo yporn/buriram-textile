@@ -72,18 +72,18 @@ export default async function HomePage() {
     <>
       <main className="flex-1">
         {/* ---------- Hero ---------- */}
-        <section className="border-b border-cream-deep">
+        <section className="border-b border-clay-deep">
           <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24 lg:py-28 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
-              <p className="font-heading text-gold-text tracking-wide text-sm sm:text-base mb-4">
+              <p className="font-heading text-ochre-text tracking-wide text-sm sm:text-base mb-4">
                 ผ้าทอพื้นบ้าน · จังหวัดบุรีรัมย์
               </p>
-              <h1 className="font-heading text-indigo text-3xl sm:text-4xl lg:text-5xl leading-snug">
+              <h1 className="font-heading text-walnut text-3xl sm:text-4xl lg:text-5xl leading-snug">
                 ค้นหาผ้าทอที่&ldquo;ใช่&rdquo;สำหรับคุณ
                 <br className="hidden sm:block" />
                 ด้วยคำแนะนำที่อธิบายได้
               </h1>
-              <p className="mt-6 text-base sm:text-lg leading-relaxed text-earth max-w-xl">
+              <p className="mt-6 text-base sm:text-lg leading-relaxed text-umber max-w-xl">
                 ระบบแนะนำผ้าทอบุรีรัมย์เฉพาะบุคคล
                 รวมภูมิปัญญาจากชุมชนผู้ทอจริงในจังหวัด
                 ตอบแบบสอบถามเพียงไม่กี่ข้อ
@@ -92,20 +92,20 @@ export default async function HomePage() {
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/questionnaire"
-                  className="inline-flex items-center justify-center bg-brick text-cream font-medium px-6 py-3 rounded-sm shadow-sm hover:bg-[#7a2424] transition"
+                  className="inline-flex items-center justify-center bg-rust text-clay font-medium px-6 py-3 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
                 >
                   เริ่มค้นหาผ้าที่เหมาะกับฉัน
                 </Link>
                 <Link
                   href="#featured"
-                  className="inline-flex items-center justify-center border border-indigo text-indigo font-medium px-6 py-3 rounded-sm hover:bg-indigo hover:text-cream transition"
+                  className="inline-flex items-center justify-center border border-walnut text-walnut font-medium px-6 py-3 rounded-sm hover:bg-walnut hover:text-clay transition"
                 >
                   ดูผ้าตัวอย่าง
                 </Link>
               </div>
             </div>
 
-            <div className="relative h-64 sm:h-80 lg:h-96 rounded-sm overflow-hidden border border-earth-deep">
+            <div className="relative h-64 sm:h-80 lg:h-96 rounded-sm overflow-hidden border border-umber-deep">
               <Image
                 src="/hero-fabric.png"
                 alt="ผ้าไหมทอบุรีรัมย์ระยะใกล้ โทนชมพูอมส้ม เห็นลวดลายทอละเอียด"
@@ -119,36 +119,36 @@ export default async function HomePage() {
         </section>
 
         {/* ---------- Stats ---------- */}
-        <section className="border-b border-cream-deep bg-indigo/3">
+        <section className="border-b border-clay-deep bg-walnut/3">
           <div className="mx-auto max-w-6xl px-6 py-8 grid grid-cols-3 gap-6 text-center">
             <StatItem value={stats.fabricCount} label="ลายผ้าอัตลักษณ์" />
             <StatItem value={stats.communityCount} label="ชุมชน / อำเภอ" />
             <StatItem value={stats.articleCount} label="เรื่องราวภูมิปัญญา" />
           </div>
-          <p className="text-center text-xs text-earth pb-5 -mt-2">
+          <p className="text-center text-xs text-umber pb-5 -mt-2">
             ข้อมูลลายผ้าอ้างอิงจากสำนักงานวัฒนธรรมจังหวัดบุรีรัมย์
           </p>
         </section>
 
         {/* ---------- Highlights ---------- */}
-        <section className="border-b border-cream-deep bg-cream-deep/40">
+        <section className="border-b border-clay-deep bg-clay-deep/40">
           <div className="mx-auto max-w-6xl px-6 py-16">
-            <h2 className="font-heading text-indigo text-2xl sm:text-3xl text-center mb-10">
+            <h2 className="font-heading text-walnut text-2xl sm:text-3xl text-center mb-10">
               ทำไมต้องใช้ระบบแนะนำนี้
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {HIGHLIGHTS.map((h, i) => (
                 <div
                   key={h.title}
-                  className="bg-cream border border-cream-deep p-6 rounded-sm"
+                  className="bg-clay border border-clay-deep p-6 rounded-sm"
                 >
-                  <div className="font-heading text-gold-text text-2xl mb-3">
+                  <div className="font-heading text-ochre-text text-2xl mb-3">
                     0{i + 1}
                   </div>
-                  <h3 className="font-heading text-indigo text-lg mb-2">
+                  <h3 className="font-heading text-walnut text-lg mb-2">
                     {h.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-earth">{h.body}</p>
+                  <p className="text-sm leading-relaxed text-umber">{h.body}</p>
                 </div>
               ))}
             </div>
@@ -156,27 +156,27 @@ export default async function HomePage() {
         </section>
 
         {/* ---------- Featured fabrics ---------- */}
-        <section id="featured" className="border-b border-cream-deep">
+        <section id="featured" className="border-b border-clay-deep">
           <div className="mx-auto max-w-6xl px-6 py-16">
             <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
               <div>
-                <h2 className="font-heading text-indigo text-2xl sm:text-3xl">
+                <h2 className="font-heading text-walnut text-2xl sm:text-3xl">
                   ผ้าตัวอย่างจากชุมชนผู้ทอ
                 </h2>
-                <p className="text-sm text-earth mt-2">
+                <p className="text-sm text-umber mt-2">
                   บางส่วนของผ้าที่อยู่ในระบบแนะนำ — ทำแบบสอบถามเพื่อดูผลลัพธ์เฉพาะของคุณ
                 </p>
               </div>
               <div className="flex items-center gap-4 shrink-0">
                 <Link
                   href="/fabrics"
-                  className="text-sm font-medium text-indigo underline underline-offset-4 hover:text-brick"
+                  className="text-sm font-medium text-walnut underline underline-offset-4 hover:text-rust"
                 >
                   ดูผ้าทั้งหมด →
                 </Link>
                 <Link
                   href="/questionnaire"
-                  className="text-sm font-medium text-brick underline underline-offset-4 hover:text-indigo"
+                  className="text-sm font-medium text-rust underline underline-offset-4 hover:text-walnut"
                 >
                   เริ่มแบบสอบถาม →
                 </Link>
@@ -184,7 +184,7 @@ export default async function HomePage() {
             </div>
 
             {fabrics.length === 0 ? (
-              <p className="text-earth italic">
+              <p className="text-umber italic">
                 ยังไม่มีผ้าในฐานข้อมูล กรุณาเพิ่มข้อมูลตัวอย่างก่อน
               </p>
             ) : (
@@ -199,20 +199,20 @@ export default async function HomePage() {
 
         {/* ---------- Story teasers ---------- */}
         {storyTeasers.length > 0 && (
-          <section className="border-b border-cream-deep bg-cream-deep/40">
+          <section className="border-b border-clay-deep bg-clay-deep/40">
             <div className="mx-auto max-w-6xl px-6 py-16">
               <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
                 <div>
-                  <p className="font-heading text-gold-text text-sm tracking-wide">
+                  <p className="font-heading text-ochre-text text-sm tracking-wide">
                     เรื่องราวผ้าทอ
                   </p>
-                  <h2 className="font-heading text-indigo text-2xl sm:text-3xl mt-2">
+                  <h2 className="font-heading text-walnut text-2xl sm:text-3xl mt-2">
                     ภูมิปัญญาเบื้องหลังลวดลาย
                   </h2>
                 </div>
                 <Link
                   href="/stories"
-                  className="text-sm font-medium text-indigo underline underline-offset-4 hover:text-brick shrink-0"
+                  className="text-sm font-medium text-walnut underline underline-offset-4 hover:text-rust shrink-0"
                 >
                   อ่านเรื่องราวทั้งหมด →
                 </Link>
@@ -223,9 +223,9 @@ export default async function HomePage() {
                   <Link
                     key={a.slug}
                     href={`/stories/${a.slug}`}
-                    className="group block bg-cream border border-cream-deep rounded-sm overflow-hidden hover:border-earth-deep transition"
+                    className="group block bg-clay border border-clay-deep rounded-sm overflow-hidden hover:border-umber-deep transition"
                   >
-                    <div className="aspect-video bg-cream-deep relative overflow-hidden">
+                    <div className="aspect-video bg-clay-deep relative overflow-hidden">
                       {a.coverUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -236,20 +236,20 @@ export default async function HomePage() {
                       ) : (
                         <div
                           aria-hidden
-                          className="h-full w-full bg-[repeating-linear-gradient(45deg,var(--color-gold)_0_2px,transparent_2px_14px),repeating-linear-gradient(-45deg,var(--color-earth-deep)_0_1px,transparent_1px_18px)]"
+                          className="h-full w-full bg-[repeating-linear-gradient(45deg,var(--color-ochre)_0_2px,transparent_2px_14px),repeating-linear-gradient(-45deg,var(--color-umber-deep)_0_1px,transparent_1px_18px)]"
                         />
                       )}
                     </div>
                     <div className="p-4">
                       {a.category && (
-                        <span className="text-xs text-gold-text tracking-wide">
+                        <span className="text-xs text-ochre-text tracking-wide">
                           {a.category}
                         </span>
                       )}
-                      <h3 className="font-heading text-indigo text-base mt-1 leading-snug">
+                      <h3 className="font-heading text-walnut text-base mt-1 leading-snug">
                         {a.title}
                       </h3>
-                      <p className="text-xs text-earth mt-2 leading-relaxed">
+                      <p className="text-xs text-umber mt-2 leading-relaxed">
                         {excerpt(a.content, 90)}
                       </p>
                     </div>
@@ -261,30 +261,30 @@ export default async function HomePage() {
         )}
 
         {/* ---------- Final CTA ---------- */}
-        <section className="relative bg-indigo text-cream overflow-hidden">
+        <section className="relative bg-walnut text-clay overflow-hidden">
           {/* ลายเรขาคณิตเบา ๆ คลุมพื้นหลัง ให้เข้าธีมงานคราฟต์แทนพื้นสีทึบ */}
           <div
             aria-hidden
-            className="absolute inset-0 opacity-[0.07] bg-[repeating-linear-gradient(45deg,var(--color-gold)_0_2px,transparent_2px_16px),repeating-linear-gradient(-45deg,var(--color-gold)_0_2px,transparent_2px_16px)]"
+            className="absolute inset-0 opacity-[0.07] bg-[repeating-linear-gradient(45deg,var(--color-ochre)_0_2px,transparent_2px_16px),repeating-linear-gradient(-45deg,var(--color-ochre)_0_2px,transparent_2px_16px)]"
           />
           <div className="relative mx-auto max-w-3xl px-6 py-16 sm:py-20 text-center">
             <span
               aria-hidden
-              className="inline-block h-px w-12 bg-gold mb-5"
+              className="inline-block h-px w-12 bg-ochre mb-5"
             />
-            <p className="text-xs sm:text-sm tracking-[0.2em] text-cream/70 uppercase mb-3">
+            <p className="text-xs sm:text-sm tracking-[0.2em] text-clay/70 uppercase mb-3">
               เริ่มต้นวันนี้
             </p>
             <h2 className="font-heading text-2xl sm:text-3xl mb-4 leading-snug">
               พร้อมเจอผ้าที่ใช่สำหรับคุณแล้วหรือยัง
             </h2>
-            <p className="text-cream/85 mb-8 leading-relaxed max-w-xl mx-auto">
+            <p className="text-clay/85 mb-8 leading-relaxed max-w-xl mx-auto">
               ใช้เวลาเพียง 1-2 นาที ตอบคำถามสั้น ๆ 4 ตอน
               ระบบจะแนะนำผ้าทอบุรีรัมย์ที่ตรงกับคุณที่สุด พร้อมเหตุผลประกอบ
             </p>
             <Link
               href="/questionnaire"
-              className="inline-flex items-center justify-center bg-brick text-cream font-medium px-8 py-3 rounded-sm shadow-sm hover:bg-[#7a2424] transition"
+              className="inline-flex items-center justify-center bg-rust text-clay font-medium px-8 py-3 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
             >
               เริ่มค้นหาผ้าที่เหมาะกับฉัน
             </Link>
@@ -300,8 +300,8 @@ export default async function HomePage() {
 function StatItem({ value, label }: { value: number; label: string }) {
   return (
     <div>
-      <p className="font-heading text-indigo text-3xl sm:text-4xl">{value}</p>
-      <p className="text-xs sm:text-sm text-earth mt-1">{label}</p>
+      <p className="font-heading text-walnut text-3xl sm:text-4xl">{value}</p>
+      <p className="text-xs sm:text-sm text-umber mt-1">{label}</p>
     </div>
   );
 }
