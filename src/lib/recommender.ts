@@ -30,6 +30,8 @@ export interface UserInput {
   selectedTags: Record<string, string[]>;
   budgetMin?: number | null;
   budgetMax?: number | null;
+  /** tag id ของหมวด color_tone ที่เข้ากับโทนผิวผู้ใช้ (resolve จาก SKIN_TONE_COLOR_CODES ที่ชั้นเรียกใช้งาน) */
+  skinToneColorTagIds?: string[];
 }
 
 export interface FabricInput {
@@ -52,6 +54,21 @@ const BUDGET_CATEGORY: CategoryConfig = {
   code: "budget",
   nameTh: "งบประมาณ",
   weight: 0.1,
+};
+
+const SKIN_TONE_CATEGORY: CategoryConfig = {
+  code: "skin_tone_match",
+  nameTh: "ความเหมาะสมกับโทนผิว",
+  weight: 0.1,
+};
+
+// โทนสีผิว → รหัส tag หมวด color_tone ที่แนะนำ (ตามหลักการจับคู่สีเบื้องต้น)
+// UNSPECIFIED ไม่อยู่ในตาราง → ผู้ใช้ไม่ระบุ = ไม่มีผลต่อคะแนน
+export const SKIN_TONE_COLOR_CODES: Record<string, string[]> = {
+  FAIR: ["bright", "dark", "pastel"],
+  MEDIUM: ["earth", "cool", "pastel"],
+  TAN: ["warm", "earth", "bright"],
+  DARK: ["warm", "bright", "dark"],
 };
 
 // --- คะแนนมิติที่เป็น Tag -------------------------------------------
@@ -124,6 +141,28 @@ function scoreBudget(
   };
 }
 
+// --- คะแนนความเหมาะสมกับโทนผิว (soft, advisory) ---------------------
+
+function scoreSkinToneMatch(
+  fabricColorTags: string[],
+  recommendedTagIds: string[]
+): DimensionMatch | null {
+  if (!recommendedTagIds || recommendedTagIds.length === 0) return null; // ไม่ระบุโทนผิว → ข้ามมิตินี้
+
+  const matched = fabricColorTags.some((t) => recommendedTagIds.includes(t));
+
+  return {
+    categoryCode: SKIN_TONE_CATEGORY.code,
+    categoryNameTh: SKIN_TONE_CATEGORY.nameTh,
+    level: matched ? "full" : "none",
+    score: matched ? 1 : 0,
+    weight: SKIN_TONE_CATEGORY.weight,
+    reasonTh: matched
+      ? `${SKIN_TONE_CATEGORY.nameTh}: โทนสีผ้านี้เข้ากับโทนผิวของคุณ`
+      : `${SKIN_TONE_CATEGORY.nameTh}: โทนสีผ้านี้อาจไม่ค่อยเข้ากับโทนผิวของคุณ`,
+  };
+}
+
 // --- ให้คะแนนผ้าหนึ่งผืน --------------------------------------------
 
 export function scoreFabric(
@@ -145,6 +184,12 @@ export function scoreFabric(
 
   const budgetDim = scoreBudget(fabric.priceThb, input.budgetMin, input.budgetMax);
   if (budgetDim) dimensions.push(budgetDim);
+
+  const skinToneDim = scoreSkinToneMatch(
+    fabric.tags["color_tone"] ?? [],
+    input.skinToneColorTagIds ?? []
+  );
+  if (skinToneDim) dimensions.push(skinToneDim);
 
   // ถ่วงน้ำหนักแล้ว normalize ด้วยผลรวมน้ำหนักของ "มิติที่ผู้ใช้ตอบ" เท่านั้น
   const totalWeight = dimensions.reduce((s, d) => s + d.weight, 0);

@@ -21,6 +21,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import {
   recommend,
+  SKIN_TONE_COLOR_CODES,
   type CategoryConfig,
   type FabricInput,
   type UserInput,
@@ -116,7 +117,9 @@ export async function POST(req: NextRequest) {
       where: { isPublished: true },
       include: { tags: { include: { tag: { include: { category: true } } } } },
     }),
-    prisma.tag.findMany({ select: { id: true, category: { select: { code: true } } } }),
+    prisma.tag.findMany({
+      select: { id: true, code: true, category: { select: { code: true } } },
+    }),
   ]);
 
   const categoryConfigs: CategoryConfig[] = categories.map((c) => ({
@@ -128,6 +131,17 @@ export async function POST(req: NextRequest) {
   // tagId → categoryCode
   const tagCategoryMap = new Map<string, string>();
   for (const t of allTags) tagCategoryMap.set(t.id, t.category.code);
+
+  // color_tone: tag code (warm, cool, ...) → tag id — ใช้จับคู่โทนผิว → โทนสีที่แนะนำ
+  const colorCodeToTagId = new Map<string, string>();
+  for (const t of allTags) {
+    if (t.category.code === "color_tone") colorCodeToTagId.set(t.code, t.id);
+  }
+  const skinToneColorTagIds = skinTone
+    ? (SKIN_TONE_COLOR_CODES[skinTone] ?? [])
+        .map((code) => colorCodeToTagId.get(code))
+        .filter((id): id is string => Boolean(id))
+    : [];
 
   // ---------- Derive selectedTags สำหรับ recommender ----------
   // ใช้ tag IDs เป็น identifier ทั้ง user side และ fabric side (recommender ไม่สนใจว่าเป็น id หรือ code ตราบใดที่เทียบกันได้)
@@ -156,7 +170,12 @@ export async function POST(req: NextRequest) {
     return { id: f.id, priceThb: f.priceThb, tags: tagsByCategory };
   });
 
-  const userInput: UserInput = { selectedTags, budgetMin, budgetMax };
+  const userInput: UserInput = {
+    selectedTags,
+    budgetMin,
+    budgetMax,
+    skinToneColorTagIds,
+  };
 
   // ---------- Run recommender ----------
   const scored = recommend(fabricInputs, userInput, categoryConfigs, TOP_N);
