@@ -97,6 +97,34 @@ const CATEGORIES = [
       { code: "dark", nameTh: "ผิวเข้ม/ผิวคล้ำ" },
     ],
   },
+  {
+    code: "body_shape",
+    nameTh: "รูปร่างที่เหมาะสม",
+    question: "ผ้านี้เหมาะกับรูปร่างใด (ตรงกับคำตอบตอนที่ 5 ของแบบสอบถาม)",
+    weight: 0.1,
+    multiple: true,
+    sortOrder: 6,
+    tags: [
+      { code: "slim", nameTh: "ผอม/บาง" },
+      { code: "average", nameTh: "สมส่วน/ปานกลาง" },
+      { code: "curvy", nameTh: "อวบ/ท้วม" },
+    ],
+  },
+  {
+    code: "dress_style",
+    nameTh: "สไตล์การแต่งกายที่เหมาะสม",
+    question: "ผ้านี้เหมาะกับสไตล์การแต่งกายแบบใด (ตรงกับคำตอบตอนที่ 5 ของแบบสอบถาม)",
+    weight: 0.1,
+    multiple: true,
+    sortOrder: 7,
+    tags: [
+      { code: "formal", nameTh: "เรียบร้อย/สุภาพ/ทางการ" },
+      { code: "casual", nameTh: "สบาย ๆ / ลำลอง" },
+      { code: "modern", nameTh: "ทันสมัย/เก๋ไก๋" },
+      { code: "traditional", nameTh: "อนุรักษ์นิยม/ดั้งเดิม" },
+      { code: "mixed", nameTh: "ผสมผสาน" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------

@@ -38,6 +38,22 @@ const SKIN_TONE_TAG_CODES: Record<string, string> = {
   DARK: "dark",
 };
 
+// BodyShape enum ของผู้ใช้ → tag code ในหมวด "body_shape"
+const BODY_SHAPE_TAG_CODES: Record<string, string> = {
+  SLIM: "slim",
+  AVERAGE: "average",
+  CURVY: "curvy",
+};
+
+// DressStyle enum ของผู้ใช้ → tag code ในหมวด "dress_style"
+const DRESS_STYLE_TAG_CODES: Record<string, string> = {
+  FORMAL: "formal",
+  CASUAL: "casual",
+  MODERN: "modern",
+  TRADITIONAL: "traditional",
+  MIXED: "mixed",
+};
+
 type IncomingBody = {
   gender?: unknown;
   maritalStatus?: unknown;
@@ -146,6 +162,20 @@ export async function POST(req: NextRequest) {
       )?.id
     : undefined;
 
+  // รูปร่างที่ผู้ใช้ตอบ → tag id ในหมวด body_shape
+  const bodyShapeTagId = bodyShape
+    ? allTags.find(
+        (t) => t.category.code === "body_shape" && t.code === BODY_SHAPE_TAG_CODES[bodyShape]
+      )?.id
+    : undefined;
+
+  // สไตล์การแต่งกายที่ผู้ใช้ตอบ → tag id ในหมวด dress_style
+  const dressStyleTagId = dressStyle
+    ? allTags.find(
+        (t) => t.category.code === "dress_style" && t.code === DRESS_STYLE_TAG_CODES[dressStyle]
+      )?.id
+    : undefined;
+
   // ---------- Derive selectedTags สำหรับ recommender ----------
   // ใช้ tag IDs เป็น identifier ทั้ง user side และ fabric side (recommender ไม่สนใจว่าเป็น id หรือ code ตราบใดที่เทียบกันได้)
   const selectedTags: Record<string, string[]> = {};
@@ -161,8 +191,10 @@ export async function POST(req: NextRequest) {
   for (const r of tagRatings) {
     if (r.score >= RATING_SELECTED_THRESHOLD) pushSelected(r.tagId);
   }
-  // ตอนที่ 5: โทนผิว → เลือก tag หมวด skin_tone โดยอัตโนมัติ
+  // ตอนที่ 5: โทนผิว/รูปร่าง/สไตล์ → เลือก tag หมวดที่เกี่ยวข้องโดยอัตโนมัติ
   if (skinToneTagId) pushSelected(skinToneTagId);
+  if (bodyShapeTagId) pushSelected(bodyShapeTagId);
+  if (dressStyleTagId) pushSelected(dressStyleTagId);
 
   // ---------- Build FabricInput ----------
   const fabricInputs: FabricInput[] = fabrics.map((f) => {
