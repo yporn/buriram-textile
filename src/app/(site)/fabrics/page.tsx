@@ -41,7 +41,7 @@ export default async function FabricsPage({
 
   return (
     <main className="flex-1 bg-clay">
-      <div className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
+      <div className="mx-auto max-w-6xl px-6 py-6 sm:py-8">
         <header>
           <p className="font-heading text-ochre-text text-sm tracking-wide">
             ผ้าทอบุรีรัมย์ทั้งหมด
@@ -50,8 +50,8 @@ export default async function FabricsPage({
             ลายผ้าอัตลักษณ์ 23 อำเภอ
           </h1>
           <p className="text-sm text-umber mt-3 leading-relaxed max-w-2xl">
-            รวมผ้าทอพื้นบ้านที่มีในระบบทั้งหมด ไล่ดูเองได้ตามชุมชนผู้ทอ
-            หรือให้ระบบช่วยแนะนำเฉพาะสำหรับคุณผ่านแบบสอบถาม
+            เลือกดูผ้าทอพื้นบ้านทั้งหมดในระบบได้ตามชุมชนผู้ทอ
+            หรือให้ระบบแนะนำผ้าที่เหมาะกับคุณโดยเฉพาะผ่านแบบสอบถาม
           </p>
         </header>
 
