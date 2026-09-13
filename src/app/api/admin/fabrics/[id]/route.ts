@@ -23,7 +23,7 @@ export async function PATCH(
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
-  const { name, description, story, priceThb, communityId, isPublished, imageUrl, tagIds } =
+  const { name, description, story, priceThb, communityId, isPublished, imageUrls, tagIds } =
     parsed.data;
 
   const existing = await prisma.fabric.findUnique({ where: { id }, select: { id: true } });
@@ -38,11 +38,16 @@ export async function PATCH(
         data: { name, description, story, priceThb, communityId, isPublished },
       });
 
-      // รูป: แทนที่ primary image เดิมทั้งหมดด้วยรูปใหม่ (ยังไม่รองรับหลายรูปในหน้า admin นี้)
+      // รูป: ล้างของเดิมแล้วสร้างใหม่ตามลำดับที่ฟอร์มส่งมา รูปแรก = primary
       await tx.fabricImage.deleteMany({ where: { fabricId: id } });
-      if (imageUrl) {
-        await tx.fabricImage.create({
-          data: { fabricId: id, url: imageUrl, isPrimary: true, sortOrder: 0 },
+      if (imageUrls.length > 0) {
+        await tx.fabricImage.createMany({
+          data: imageUrls.map((url, index) => ({
+            fabricId: id,
+            url,
+            isPrimary: index === 0,
+            sortOrder: index,
+          })),
         });
       }
 

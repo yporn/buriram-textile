@@ -7,7 +7,7 @@ async function getFormData(id: string) {
     prisma.fabric.findUnique({
       where: { id },
       include: {
-        images: { where: { isPrimary: true }, take: 1 },
+        images: { orderBy: { sortOrder: "asc" } },
         tags: { select: { tagId: true } },
       },
     }),
@@ -54,7 +54,7 @@ export default async function EditFabricPage({
           priceThb: fabric.priceThb,
           communityId: fabric.communityId,
           isPublished: fabric.isPublished,
-          imageUrl: fabric.images[0]?.url ?? null,
+          imageUrls: fabric.images.map((img) => img.url),
           tagIds: fabric.tags.map((t) => t.tagId),
         }}
       />

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
-  const { name, description, story, priceThb, communityId, isPublished, imageUrl, tagIds } =
+  const { name, description, story, priceThb, communityId, isPublished, imageUrls, tagIds } =
     parsed.data;
 
   try {
@@ -30,9 +30,14 @@ export async function POST(req: NextRequest) {
         data: { name, description, story, priceThb, communityId, isPublished },
       });
 
-      if (imageUrl) {
-        await tx.fabricImage.create({
-          data: { fabricId: created.id, url: imageUrl, isPrimary: true, sortOrder: 0 },
+      if (imageUrls.length > 0) {
+        await tx.fabricImage.createMany({
+          data: imageUrls.map((url, index) => ({
+            fabricId: created.id,
+            url,
+            isPrimary: index === 0,
+            sortOrder: index,
+          })),
         });
       }
 

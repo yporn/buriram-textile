@@ -21,7 +21,7 @@ export type FabricFormInitial = {
   priceThb: number;
   communityId: string | null;
   isPublished: boolean;
-  imageUrl: string | null;
+  imageUrls: string[];
   tagIds: string[];
 };
 
@@ -32,7 +32,7 @@ const emptyInitial: FabricFormInitial = {
   priceThb: 0,
   communityId: null,
   isPublished: true,
-  imageUrl: null,
+  imageUrls: [],
   tagIds: [],
 };
 
@@ -58,7 +58,7 @@ export function FabricForm({
   const [priceThb, setPriceThb] = useState(String(base.priceThb));
   const [communityId, setCommunityId] = useState(base.communityId ?? "");
   const [isPublished, setIsPublished] = useState(base.isPublished);
-  const [imageUrl, setImageUrl] = useState<string | null>(base.imageUrl);
+  const [imageUrls, setImageUrls] = useState<string[]>(base.imageUrls);
   const [tagIds, setTagIds] = useState<string[]>(base.tagIds);
 
   const [uploading, setUploading] = useState(false);
@@ -74,27 +74,43 @@ export function FabricForm({
   }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
 
     setUploading(true);
     setError(null);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { error?: string };
-        throw new Error(data.error ?? "อัปโหลดรูปไม่สำเร็จ");
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+        if (!res.ok) {
+          const data = (await res.json().catch(() => ({}))) as { error?: string };
+          throw new Error(data.error ?? "อัปโหลดรูปไม่สำเร็จ");
+        }
+        const data = (await res.json()) as { url: string };
+        setImageUrls((prev) => [...prev, data.url]);
       }
-      const data = (await res.json()) as { url: string };
-      setImageUrl(data.url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "อัปโหลดรูปไม่สำเร็จ");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  }
+
+  function removeImage(index: number) {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function makePrimary(index: number) {
+    setImageUrls((prev) => {
+      if (index === 0) return prev;
+      const next = [...prev];
+      const [picked] = next.splice(index, 1);
+      next.unshift(picked);
+      return next;
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -109,7 +125,7 @@ export function FabricForm({
       priceThb: Number(priceThb),
       communityId: communityId || null,
       isPublished,
-      imageUrl,
+      imageUrls,
       tagIds,
     };
 
@@ -220,31 +236,52 @@ export function FabricForm({
 
       {/* ---------- รูปภาพ ---------- */}
       <div className="bg-clay border border-clay-deep rounded-sm p-5">
-        <p className="text-sm text-umber mb-3">รูปหลักของผ้า</p>
-        {imageUrl && (
-          <div className="mb-3 h-40 w-40 bg-clay-deep rounded-sm overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+        <p className="text-sm text-umber mb-3">
+          รูปของผ้า (อัปโหลดได้หลายรูป — รูปแรกคือรูปหลักที่ใช้แสดงในรายการ)
+        </p>
+        {imageUrls.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-3">
+            {imageUrls.map((url, index) => (
+              <div key={url} className="relative">
+                <div className="h-32 w-32 bg-clay-deep rounded-sm overflow-hidden border border-clay-deep">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="" className="h-full w-full object-cover" />
+                </div>
+                {index === 0 ? (
+                  <span className="absolute top-1 left-1 bg-umber-deep text-clay text-[10px] px-1.5 py-0.5 rounded-sm">
+                    รูปหลัก
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => makePrimary(index)}
+                    className="absolute top-1 left-1 bg-clay/90 text-walnut text-[10px] px-1.5 py-0.5 rounded-sm hover:bg-clay"
+                  >
+                    ตั้งเป็นรูปหลัก
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  aria-label="ลบรูปนี้"
+                  className="absolute -top-2 -right-2 h-6 w-6 flex items-center justify-center bg-rust text-clay rounded-full text-xs hover:bg-[#5C230F]"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
           </div>
         )}
         <input
           ref={fileInputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp"
+          multiple
           onChange={handleFileChange}
           disabled={uploading}
           className="text-sm text-umber"
         />
         {uploading && <p className="text-xs text-umber mt-2">กำลังอัปโหลด...</p>}
-        {imageUrl && !uploading && (
-          <button
-            type="button"
-            onClick={() => setImageUrl(null)}
-            className="block mt-2 text-xs text-rust underline underline-offset-2"
-          >
-            ลบรูปนี้
-          </button>
-        )}
       </div>
 
       {/* ---------- Tag ---------- */}

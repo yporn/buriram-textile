@@ -5,7 +5,7 @@ export type ParsedFabricInput = {
   priceThb: number;
   communityId: string | null;
   isPublished: boolean;
-  imageUrl: string | null;
+  imageUrls: string[];
   tagIds: string[];
 };
 
@@ -44,10 +44,11 @@ export function parseFabricBody(
           ? body.communityId
           : null,
       isPublished: typeof body.isPublished === "boolean" ? body.isPublished : true,
-      imageUrl:
-        typeof body.imageUrl === "string" && body.imageUrl.length > 0
-          ? body.imageUrl
-          : null,
+      imageUrls: Array.isArray(body.imageUrls)
+        ? body.imageUrls.filter(
+            (u): u is string => typeof u === "string" && u.length > 0
+          )
+        : [],
       tagIds,
     },
   };
