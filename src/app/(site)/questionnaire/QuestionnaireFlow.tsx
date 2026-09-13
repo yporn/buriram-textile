@@ -511,8 +511,8 @@ function QuestionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-clay border border-clay-deep rounded-sm p-4 sm:p-5">
-      <div className="mb-3">
+    <div className="bg-clay border border-clay-deep rounded-sm p-3 sm:p-4">
+      <div className="mb-2.5">
         <p className="font-heading text-walnut text-sm sm:text-base leading-snug">
           {label}
         </p>
@@ -535,14 +535,14 @@ function RadioGroup<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {options.map((opt) => {
         const checked = value === opt.value;
         return (
           <label
             key={opt.value}
             className={[
-              "flex items-center gap-3 p-3 rounded-sm border-2 cursor-pointer transition",
+              "flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm border cursor-pointer transition",
               checked
                 ? "border-rust bg-rust/5"
                 : "border-clay-deep hover:border-umber-deep",
@@ -586,14 +586,14 @@ function CheckboxGroup({
     onChange(values.includes(v) ? values.filter((x) => x !== v) : [...values, v]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {options.map((opt) => {
         const checked = values.includes(opt.value);
         return (
           <label
             key={opt.value}
             className={[
-              "flex items-center gap-3 p-3 rounded-sm border-2 cursor-pointer transition",
+              "flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm border cursor-pointer transition",
               checked
                 ? "border-rust bg-rust/5"
                 : "border-clay-deep hover:border-umber-deep",
