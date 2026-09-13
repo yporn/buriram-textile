@@ -643,8 +643,8 @@ function QuestionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-clay border border-clay-deep rounded-sm p-3 sm:p-4">
-      <div className="mb-2.5">
+    <div className="bg-clay border border-clay-deep rounded-sm p-2 sm:p-3">
+      <div className="mb-1.5">
         <p className="font-heading text-walnut text-sm sm:text-base leading-snug">
           {label}
         </p>
