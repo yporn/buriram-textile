@@ -16,7 +16,8 @@ export function SiteFooter() {
         <div>
           <p className="font-heading text-clay text-lg mb-1.5">ผ้าทอบุรีรัมย์</p>
           <p className="text-sm opacity-80 max-w-xs leading-relaxed">
-            ระบบแนะนำผ้าทอพื้นบ้านจังหวัดบุรีรัมย์เฉพาะบุคคล — งานวิจัยระดับปริญญา
+            ระบบแนะนำผ้าทอพื้นบ้านจังหวัดบุรีรัมย์เฉพาะบุคคลด้วยเทคโนโลยีอัจฉริยะ
+            — งานวิจัยระดับปริญญา
           </p>
         </div>
 
