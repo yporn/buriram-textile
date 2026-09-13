@@ -667,7 +667,7 @@ function RadioGroup<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="space-y-1.5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
       {options.map((opt) => {
         const checked = value === opt.value;
         return (
@@ -718,7 +718,7 @@ function CheckboxGroup({
     onChange(values.includes(v) ? values.filter((x) => x !== v) : [...values, v]);
 
   return (
-    <div className="space-y-1.5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
       {options.map((opt) => {
         const checked = values.includes(opt.value);
         return (
