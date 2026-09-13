@@ -94,22 +94,20 @@ export default async function HomePage() {
                     ผ้าทอพื้นบ้าน · จังหวัดบุรีรัมย์
                   </p>
                   <h1 className="font-heading text-clay text-3xl sm:text-4xl lg:text-5xl leading-snug">
-                    ค้นหาผ้าทอที่&ldquo;ใช่&rdquo;สำหรับคุณ
+                    ระบบแนะนำผ้าทอพื้นบ้านจังหวัดบุรีรัมย์เฉพาะบุคคล
                     <br className="hidden sm:block" />
-                    ด้วยคำแนะนำที่อธิบายได้
+                    ด้วยเทคโนโลยีอัจฉริยะ
                   </h1>
                   <p className="mt-6 text-base sm:text-lg leading-relaxed text-clay/90 max-w-xl">
-                    ระบบแนะนำผ้าทอบุรีรัมย์เฉพาะบุคคล
-                    รวมภูมิปัญญาจากชุมชนผู้ทอจริงในจังหวัด
-                    ตอบแบบสอบถามเพียงไม่กี่ข้อ
-                    แล้วมาเจอผ้าที่ตรงกับโอกาส สไตล์ และงบของคุณ
+                    รวบรวมข้อมูลผ้าทออัตลักษณ์และภูมิปัญญาจากชุมชนผู้ทอในจังหวัดบุรีรัมย์
+                    ตอบแบบสอบถามเพื่อรับคำแนะนำผ้าที่สอดคล้องกับโอกาสใช้งาน สไตล์ และงบประมาณของคุณ
                   </p>
                   <div className="mt-8 flex flex-col sm:flex-row gap-3">
                     <Link
                       href="/questionnaire"
                       className="inline-flex items-center justify-center bg-rust text-clay font-medium px-6 py-3 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
                     >
-                      เริ่มค้นหาผ้าที่เหมาะกับฉัน
+                      เริ่มทำแบบสอบถาม
                     </Link>
                     <Link
                       href="#featured"
@@ -140,7 +138,7 @@ export default async function HomePage() {
         <section className="border-b border-clay-deep bg-clay-deep/40">
           <div className="mx-auto max-w-6xl px-6 py-16">
             <h2 className="font-heading text-walnut text-2xl sm:text-3xl text-center mb-10">
-              ทำไมต้องใช้ระบบแนะนำนี้
+              คุณสมบัติของระบบแนะนำ
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {HIGHLIGHTS.map((h, i) => (
@@ -279,20 +277,20 @@ export default async function HomePage() {
               className="inline-block h-px w-12 bg-ochre mb-5"
             />
             <p className="text-xs sm:text-sm tracking-[0.2em] text-clay/70 uppercase mb-3">
-              เริ่มต้นวันนี้
+              แบบสอบถามคำแนะนำ
             </p>
             <h2 className="font-heading text-2xl sm:text-3xl mb-4 leading-snug">
-              พร้อมเจอผ้าที่ใช่สำหรับคุณแล้วหรือยัง
+              เริ่มทำแบบสอบถามเพื่อรับคำแนะนำผ้าทอ
             </h2>
             <p className="text-clay/85 mb-8 leading-relaxed max-w-xl mx-auto">
-              ใช้เวลาเพียง 1-2 นาที ตอบคำถามสั้น ๆ 4 ตอน
-              ระบบจะแนะนำผ้าทอบุรีรัมย์ที่ตรงกับคุณที่สุด พร้อมเหตุผลประกอบ
+              ใช้เวลาประมาณ 1-2 นาที ตอบคำถาม 4 ตอน
+              เพื่อรับคำแนะนำผ้าทอบุรีรัมย์ที่ตรงกับความต้องการของคุณ พร้อมเหตุผลประกอบ
             </p>
             <Link
               href="/questionnaire"
               className="inline-flex items-center justify-center bg-rust text-clay font-medium px-8 py-3 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
             >
-              เริ่มค้นหาผ้าที่เหมาะกับฉัน
+              เริ่มทำแบบสอบถาม
             </Link>
           </div>
         </section>

@@ -128,12 +128,12 @@ export type SubmitPayload = {
   factorRatings: { factorId: string; score: number }[]; // ตอนที่ 4
 };
 
-const PART_TITLES = [
-  "ตอนที่ 1 · ข้อมูลทั่วไป",
-  "ตอนที่ 2 · พฤติกรรมและความชอบในการเลือกใช้ผ้าทอ",
-  "ตอนที่ 3 · ความชอบด้านลวดลาย สี และรูปแบบ",
-  "ตอนที่ 4 · ปัจจัยที่มีผลต่อการตัดสินใจเลือกผ้าทอพื้นบ้าน",
-];
+const PARTS = [
+  { no: "ตอนที่ 1", title: "ข้อมูลทั่วไป" },
+  { no: "ตอนที่ 2", title: "พฤติกรรมและความชอบในการเลือกใช้ผ้าทอ" },
+  { no: "ตอนที่ 3", title: "ความชอบด้านลวดลาย สี และรูปแบบ" },
+  { no: "ตอนที่ 4", title: "ปัจจัยที่มีผลต่อการตัดสินใจเลือกผ้าทอพื้นบ้าน" },
+] as const;
 
 // =====================================================================
 // Main component
@@ -146,7 +146,6 @@ export function QuestionnaireFlow({
   categories: CategoryTagsInput[];
   factors: DecisionFactorInput[];
 }) {
-  const [part, setPart] = useState(0);
   const [demographics, setDemographics] = useState<DemographicsState>({
     gender: null,
     ageRange: null,
@@ -194,8 +193,6 @@ export function QuestionnaireFlow({
     };
   }, [demographics, behavior, tagRatings, factorRatings]);
 
-  const isLast = part === PART_TITLES.length - 1;
-
   async function submit() {
     setSubmitting(true);
     setSubmitError(null);
@@ -223,24 +220,7 @@ export function QuestionnaireFlow({
     }
   }
 
-  function next() {
-    if (isLast) {
-      void submit();
-      return;
-    }
-    setPart((p) => p + 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function back() {
-    if (part > 0) {
-      setPart((p) => p - 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
-
   function reset() {
-    setPart(0);
     setDemographics({
       gender: null,
       ageRange: null,
@@ -268,36 +248,41 @@ export function QuestionnaireFlow({
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-12">
-      <ProgressBar current={part + 1} total={PART_TITLES.length} />
-      <h1 className="font-heading text-walnut text-xl sm:text-2xl mt-6 leading-snug">
-        {PART_TITLES[part]}
+      <h1 className="font-heading text-walnut text-lg sm:text-xl leading-snug">
+        แบบสอบถามเพื่อรับคำแนะนำผ้าทอ
       </h1>
+      <p className="text-xs sm:text-sm text-umber mt-1">
+        กรอกครบทั้ง 4 ตอนในหน้าเดียว แล้วกดส่งแบบสอบถามด้านล่าง
+      </p>
 
-      <div className="mt-8 space-y-6">
-        {part === 0 && (
+      <div className="mt-8 space-y-10">
+        <PartSection no={PARTS[0].no} title={PARTS[0].title}>
           <PartDemographics value={demographics} onChange={setDemographics} />
-        )}
-        {part === 1 && (
+        </PartSection>
+
+        <PartSection no={PARTS[1].no} title={PARTS[1].title}>
           <PartBehavior
             value={behavior}
             onChange={setBehavior}
             occasionCategory={occasionCategory}
           />
-        )}
-        {part === 2 && (
+        </PartSection>
+
+        <PartSection no={PARTS[2].no} title={PARTS[2].title}>
           <PartPreferences
             categories={preferenceCategories}
             ratings={tagRatings}
             onChange={setTagRatings}
           />
-        )}
-        {part === 3 && (
+        </PartSection>
+
+        <PartSection no={PARTS[3].no} title={PARTS[3].title}>
           <PartFactors
             factors={factors}
             ratings={factorRatings}
             onChange={setFactorRatings}
           />
-        )}
+        </PartSection>
       </div>
 
       {submitError && (
@@ -306,29 +291,39 @@ export function QuestionnaireFlow({
         </p>
       )}
 
-      <div className="mt-10 flex items-center justify-between gap-3">
+      <div className="mt-10 flex justify-end">
         <button
           type="button"
-          onClick={back}
-          disabled={part === 0 || submitting}
-          className="text-sm text-umber hover:text-walnut disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          ← ตอนก่อนหน้า
-        </button>
-        <button
-          type="button"
-          onClick={next}
+          onClick={() => void submit()}
           disabled={submitting}
           className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] disabled:bg-umber/40 disabled:cursor-not-allowed transition"
         >
-          {isLast
-            ? submitting
-              ? "กำลังส่ง..."
-              : "ส่งแบบสอบถาม"
-            : "ตอนถัดไป →"}
+          {submitting ? "กำลังส่ง..." : "ส่งแบบสอบถาม"}
         </button>
       </div>
     </div>
+  );
+}
+
+function PartSection({
+  no,
+  title,
+  children,
+}: {
+  no: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section>
+      <p className="font-heading text-ochre-text text-xs sm:text-sm tracking-wide">
+        {no}
+      </p>
+      <h2 className="font-heading text-walnut text-base sm:text-lg mt-1 leading-snug">
+        {title}
+      </h2>
+      <div className="mt-4 space-y-6">{children}</div>
+    </section>
   );
 }
 
@@ -447,14 +442,11 @@ function PartPreferences({
   onChange: (next: RatingsState) => void;
 }) {
   return (
-    <QuestionCard
-      label="กรุณาให้คะแนนความชอบในแต่ละด้าน"
-      hint="1 = ไม่ชอบ, 5 = ชอบมากที่สุด"
-    >
+    <QuestionCard label="กรุณาให้คะแนนความชอบในแต่ละด้าน">
       <div className="space-y-6">
         {categories.map((cat) => (
           <div key={cat.code}>
-            <p className="font-heading text-umber-deep text-sm mb-3">
+            <p className="font-heading text-umber-deep text-xs uppercase tracking-wide border-b border-clay-deep pb-2 mb-3">
               {cat.nameTh}
             </p>
             <div className="space-y-2">
@@ -489,10 +481,7 @@ function PartFactors({
   onChange: (next: RatingsState) => void;
 }) {
   return (
-    <QuestionCard
-      label="กรุณาให้คะแนนความสำคัญของปัจจัยต่อไปนี้"
-      hint="1 = ไม่สำคัญ, 5 = สำคัญมากที่สุด"
-    >
+    <QuestionCard label="กรุณาให้คะแนนความสำคัญของปัจจัยต่อไปนี้">
       <div className="space-y-2">
         {factors.map((f) => (
           <LikertRow
@@ -512,24 +501,6 @@ function PartFactors({
 // Reusable UI
 // =====================================================================
 
-function ProgressBar({ current, total }: { current: number; total: number }) {
-  const pct = Math.round((current / total) * 100);
-  return (
-    <div>
-      <div className="flex justify-between text-xs text-umber mb-2">
-        <span>ตอนที่ {current} จาก {total}</span>
-        <span>{pct}%</span>
-      </div>
-      <div className="h-2 w-full bg-clay-deep rounded-sm overflow-hidden">
-        <div
-          className="h-full bg-rust transition-all duration-300"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
 function QuestionCard({
   label,
   hint,
@@ -540,9 +511,9 @@ function QuestionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-clay border border-clay-deep rounded-sm p-5 sm:p-6">
-      <div className="mb-4">
-        <p className="font-heading text-walnut text-base sm:text-lg leading-snug">
+    <div className="bg-clay border border-clay-deep rounded-sm p-4 sm:p-5">
+      <div className="mb-3">
+        <p className="font-heading text-walnut text-sm sm:text-base leading-snug">
           {label}
         </p>
         {hint && <p className="text-xs text-umber mt-1">{hint}</p>}
@@ -594,7 +565,7 @@ function RadioGroup<T extends string>({
             >
               {checked && <span className="h-2 w-2 rounded-full bg-rust" />}
             </span>
-            <span className="text-sm text-walnut">{opt.label}</span>
+            <span className="text-xs sm:text-sm text-umber-deep">{opt.label}</span>
           </label>
         );
       })}
@@ -653,7 +624,7 @@ function CheckboxGroup({
                 </svg>
               )}
             </span>
-            <span className="text-sm text-walnut">{opt.label}</span>
+            <span className="text-xs sm:text-sm text-umber-deep">{opt.label}</span>
           </label>
         );
       })}
@@ -674,7 +645,12 @@ function LikertRow({
 }) {
   return (
     <div className="border-b border-clay-deep pb-3 last:border-0 last:pb-0">
-      <p className="text-sm text-walnut mb-2">{label}</p>
+      <p className="flex items-center gap-1.5 text-sm sm:text-base font-medium text-walnut mb-2">
+        <span aria-hidden className="text-rust">
+          ›
+        </span>
+        {label}
+      </p>
       <div className="grid grid-cols-5 gap-1.5">
         {options.map((o) => {
           const checked = value === o.score;
@@ -685,10 +661,10 @@ function LikertRow({
               onClick={() => onChange(o.score)}
               aria-pressed={checked}
               className={[
-                "px-1 py-2 rounded-sm border text-xs sm:text-sm leading-tight transition",
+                "px-1 py-1.5 rounded-sm border text-[11px] sm:text-xs leading-tight transition",
                 checked
                   ? "border-rust bg-rust text-clay"
-                  : "border-clay-deep bg-clay text-umber hover:border-umber-deep",
+                  : "border-clay-deep bg-clay text-umber-deep hover:border-umber-deep",
               ].join(" ")}
               title={o.label}
             >
