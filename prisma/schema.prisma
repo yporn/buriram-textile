@@ -157,6 +157,7 @@ model RecommendationSession {
 
   // ตอนที่ 1: ข้อมูลทั่วไป (nullable — ให้ผู้ใช้ข้ามได้)
   gender         Gender?
+  maritalStatus  MaritalStatus?
   ageRange       AgeRange?
   occupation     Occupation?
   monthlyIncome  IncomeRange?
@@ -167,6 +168,12 @@ model RecommendationSession {
 
   budgetMin  Int?
   budgetMax  Int?
+
+  // ตอนที่ 5: ข้อมูลเพิ่มเติมเพื่อการแนะนำเฉพาะบุคคล
+  skinTone   SkinTone?
+  bodyShape  BodyShape?
+  heightRange HeightRange?
+  dressStyle DressStyle?
 
   createdAt  DateTime @default(now())
 
@@ -216,6 +223,41 @@ enum UsageFrequency {
   SOMETIMES            // เคยใช้บางครั้ง
   RARELY               // เคยใช้นาน ๆ ครั้ง
   NEVER_BUT_INTERESTED // ไม่เคยใช้ แต่สนใจ
+}
+
+enum MaritalStatus {
+  SINGLE   // โสด
+  MARRIED  // สมรส
+}
+
+enum SkinTone {
+  FAIR       // ผิวขาว/ขาวเหลือง
+  MEDIUM     // ผิวสองสี/ผิวกลาง
+  TAN        // ผิวสองสี/ผิวแทน
+  DARK       // ผิวเข้ม/ผิวคล้ำ
+  UNSPECIFIED // ไม่แน่ใจ/ไม่ต้องการระบุ
+}
+
+enum BodyShape {
+  SLIM        // ผอม/บาง
+  AVERAGE     // สมส่วน/ปานกลาง
+  CURVY       // อวบ/ท้วม
+  UNSPECIFIED // ไม่ต้องการระบุ
+}
+
+enum HeightRange {
+  UNDER_155    // ต่ำกว่า 155 ซม.
+  RANGE_155_165 // 155–165 ซม.
+  RANGE_166_175 // 166–175 ซม.
+  OVER_175     // มากกว่า 175 ซม.
+}
+
+enum DressStyle {
+  FORMAL      // เรียบร้อย/สุภาพ/ทางการ
+  CASUAL      // สบาย ๆ / ลำลอง
+  MODERN      // ทันสมัย/เก๋ไก๋
+  TRADITIONAL // อนุรักษ์นิยม/ดั้งเดิม
+  MIXED       // ผสมผสาน
 }
 
 model SessionAnswer {

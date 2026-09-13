@@ -7,10 +7,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   Gender,
+  MaritalStatus,
   AgeRange,
   Occupation,
   IncomeRange,
   UsageFrequency,
+  SkinTone,
+  BodyShape,
+  HeightRange,
+  DressStyle,
   Prisma,
 } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -27,6 +32,7 @@ const TOP_N = 5;
 
 type IncomingBody = {
   gender?: unknown;
+  maritalStatus?: unknown;
   ageRange?: unknown;
   occupation?: unknown;
   monthlyIncome?: unknown;
@@ -36,6 +42,10 @@ type IncomingBody = {
   budgetMax?: unknown;
   tagRatings?: unknown;
   factorRatings?: unknown;
+  skinTone?: unknown;
+  bodyShape?: unknown;
+  heightRange?: unknown;
+  dressStyle?: unknown;
 };
 
 function toEnum<T extends string>(
@@ -84,6 +94,7 @@ export async function POST(req: NextRequest) {
 
   // ---------- Validate & normalize ----------
   const gender = toEnum(body.gender, Gender);
+  const maritalStatus = toEnum(body.maritalStatus, MaritalStatus);
   const ageRange = toEnum(body.ageRange, AgeRange);
   const occupation = toEnum(body.occupation, Occupation);
   const monthlyIncome = toEnum(body.monthlyIncome, IncomeRange);
@@ -93,6 +104,10 @@ export async function POST(req: NextRequest) {
   const budgetMax = toNullableInt(body.budgetMax);
   const tagRatings = toRatingArray(body.tagRatings, "tagId");
   const factorRatings = toRatingArray(body.factorRatings, "factorId");
+  const skinTone = toEnum(body.skinTone, SkinTone);
+  const bodyShape = toEnum(body.bodyShape, BodyShape);
+  const heightRange = toEnum(body.heightRange, HeightRange);
+  const dressStyle = toEnum(body.dressStyle, DressStyle);
 
   // ---------- Fetch reference data ----------
   const [categories, fabrics, allTags] = await Promise.all([
@@ -152,12 +167,17 @@ export async function POST(req: NextRequest) {
       const session = await tx.recommendationSession.create({
         data: {
           gender,
+          maritalStatus,
           ageRange,
           occupation,
           monthlyIncome,
           pastUsageFreq,
           budgetMin,
           budgetMax,
+          skinTone,
+          bodyShape,
+          heightRange,
+          dressStyle,
         },
       });
 

@@ -39,6 +39,11 @@ const GENDER_OPTIONS = [
   { value: "UNSPECIFIED", label: "ไม่ต้องการระบุ" },
 ] as const;
 
+const MARITAL_STATUS_OPTIONS = [
+  { value: "SINGLE", label: "โสด" },
+  { value: "MARRIED", label: "สมรส" },
+] as const;
+
 const AGE_OPTIONS = [
   { value: "UNDER_20", label: "ต่ำกว่า 20 ปี" },
   { value: "AGE_21_30", label: "21–30 ปี" },
@@ -96,12 +101,43 @@ const LIKERT_IMPORTANCE = [
   { score: 1, label: "ไม่สำคัญ" },
 ] as const;
 
+const SKIN_TONE_OPTIONS = [
+  { value: "FAIR", label: "ผิวขาว/ขาวเหลือง" },
+  { value: "MEDIUM", label: "ผิวสองสี/ผิวกลาง" },
+  { value: "TAN", label: "ผิวสองสี/ผิวแทน" },
+  { value: "DARK", label: "ผิวเข้ม/ผิวคล้ำ" },
+  { value: "UNSPECIFIED", label: "ไม่แน่ใจ/ไม่ต้องการระบุ" },
+] as const;
+
+const BODY_SHAPE_OPTIONS = [
+  { value: "SLIM", label: "ผอม/บาง" },
+  { value: "AVERAGE", label: "สมส่วน/ปานกลาง" },
+  { value: "CURVY", label: "อวบ/ท้วม" },
+  { value: "UNSPECIFIED", label: "ไม่ต้องการระบุ" },
+] as const;
+
+const HEIGHT_OPTIONS = [
+  { value: "UNDER_155", label: "ต่ำกว่า 155 ซม." },
+  { value: "RANGE_155_165", label: "155–165 ซม." },
+  { value: "RANGE_166_175", label: "166–175 ซม." },
+  { value: "OVER_175", label: "มากกว่า 175 ซม." },
+] as const;
+
+const DRESS_STYLE_OPTIONS = [
+  { value: "FORMAL", label: "เรียบร้อย/สุภาพ/ทางการ" },
+  { value: "CASUAL", label: "สบาย ๆ / ลำลอง" },
+  { value: "MODERN", label: "ทันสมัย/เก๋ไก๋" },
+  { value: "TRADITIONAL", label: "อนุรักษ์นิยม/ดั้งเดิม" },
+  { value: "MIXED", label: "ผสมผสาน" },
+] as const;
+
 // =====================================================================
 // State + payload
 // =====================================================================
 
 type DemographicsState = {
   gender: string | null;
+  maritalStatus: string | null;
   ageRange: string | null;
   occupation: string | null;
   monthlyIncome: string | null;
@@ -113,10 +149,18 @@ type BehaviorState = {
   budgetKey: string | null;
 };
 
+type PersonalizationState = {
+  skinTone: string | null;
+  bodyShape: string | null;
+  heightRange: string | null;
+  dressStyle: string | null;
+};
+
 type RatingsState = Record<string, number>; // id → 1..5
 
 export type SubmitPayload = {
   gender: string | null;
+  maritalStatus: string | null;
   ageRange: string | null;
   occupation: string | null;
   monthlyIncome: string | null;
@@ -126,6 +170,10 @@ export type SubmitPayload = {
   budgetMax: number | null;
   tagRatings: { tagId: string; score: number }[]; // ตอนที่ 3
   factorRatings: { factorId: string; score: number }[]; // ตอนที่ 4
+  skinTone: string | null;
+  bodyShape: string | null;
+  heightRange: string | null;
+  dressStyle: string | null;
 };
 
 const PARTS = [
@@ -133,6 +181,7 @@ const PARTS = [
   { no: "ตอนที่ 2", title: "พฤติกรรมและความชอบในการเลือกใช้ผ้าทอ" },
   { no: "ตอนที่ 3", title: "ความชอบด้านลวดลาย สี และรูปแบบ" },
   { no: "ตอนที่ 4", title: "ปัจจัยที่มีผลต่อการตัดสินใจเลือกผ้าทอพื้นบ้าน" },
+  { no: "ตอนที่ 5", title: "ข้อมูลเพิ่มเติมเพื่อการแนะนำเฉพาะบุคคล" },
 ] as const;
 
 // =====================================================================
@@ -148,6 +197,7 @@ export function QuestionnaireFlow({
 }) {
   const [demographics, setDemographics] = useState<DemographicsState>({
     gender: null,
+    maritalStatus: null,
     ageRange: null,
     occupation: null,
     monthlyIncome: null,
@@ -156,6 +206,12 @@ export function QuestionnaireFlow({
     pastUsageFreq: null,
     occasionTagIds: [],
     budgetKey: null,
+  });
+  const [personalization, setPersonalization] = useState<PersonalizationState>({
+    skinTone: null,
+    bodyShape: null,
+    heightRange: null,
+    dressStyle: null,
   });
   const [tagRatings, setTagRatings] = useState<RatingsState>({});
   const [factorRatings, setFactorRatings] = useState<RatingsState>({});
@@ -175,6 +231,7 @@ export function QuestionnaireFlow({
     const budget = BUDGET_OPTIONS.find((o) => o.key === behavior.budgetKey);
     return {
       gender: demographics.gender,
+      maritalStatus: demographics.maritalStatus,
       ageRange: demographics.ageRange,
       occupation: demographics.occupation,
       monthlyIncome: demographics.monthlyIncome,
@@ -190,8 +247,12 @@ export function QuestionnaireFlow({
         factorId,
         score,
       })),
+      skinTone: personalization.skinTone,
+      bodyShape: personalization.bodyShape,
+      heightRange: personalization.heightRange,
+      dressStyle: personalization.dressStyle,
     };
-  }, [demographics, behavior, tagRatings, factorRatings]);
+  }, [demographics, behavior, personalization, tagRatings, factorRatings]);
 
   async function submit() {
     setSubmitting(true);
@@ -223,11 +284,18 @@ export function QuestionnaireFlow({
   function reset() {
     setDemographics({
       gender: null,
+      maritalStatus: null,
       ageRange: null,
       occupation: null,
       monthlyIncome: null,
     });
     setBehavior({ pastUsageFreq: null, occasionTagIds: [], budgetKey: null });
+    setPersonalization({
+      skinTone: null,
+      bodyShape: null,
+      heightRange: null,
+      dressStyle: null,
+    });
     setTagRatings({});
     setFactorRatings({});
     setSavedSessionId(null);
@@ -252,7 +320,7 @@ export function QuestionnaireFlow({
         แบบสอบถามเพื่อรับคำแนะนำผ้าทอ
       </h1>
       <p className="text-xs sm:text-sm text-umber mt-1">
-        กรอกครบทั้ง 4 ตอนในหน้าเดียว แล้วกดส่งแบบสอบถามด้านล่าง
+        กรอกครบทั้ง 5 ตอนในหน้าเดียว แล้วกดส่งแบบสอบถามด้านล่าง
       </p>
 
       <div className="mt-8 space-y-10">
@@ -281,6 +349,13 @@ export function QuestionnaireFlow({
             factors={factors}
             ratings={factorRatings}
             onChange={setFactorRatings}
+          />
+        </PartSection>
+
+        <PartSection no={PARTS[4].no} title={PARTS[4].title}>
+          <PartPersonalization
+            value={personalization}
+            onChange={setPersonalization}
           />
         </PartSection>
       </div>
@@ -346,6 +421,14 @@ function PartDemographics({
           options={GENDER_OPTIONS}
           value={value.gender}
           onChange={(v) => onChange({ ...value, gender: v })}
+        />
+      </QuestionCard>
+      <QuestionCard label="สถานภาพ">
+        <RadioGroup
+          name="maritalStatus"
+          options={MARITAL_STATUS_OPTIONS}
+          value={value.maritalStatus}
+          onChange={(v) => onChange({ ...value, maritalStatus: v })}
         />
       </QuestionCard>
       <QuestionCard label="อาชีพ">
@@ -494,6 +577,55 @@ function PartFactors({
         ))}
       </div>
     </QuestionCard>
+  );
+}
+
+// =====================================================================
+// ตอนที่ 5 — ข้อมูลเพิ่มเติมเพื่อการแนะนำเฉพาะบุคคล
+// =====================================================================
+
+function PartPersonalization({
+  value,
+  onChange,
+}: {
+  value: PersonalizationState;
+  onChange: (next: PersonalizationState) => void;
+}) {
+  return (
+    <>
+      <QuestionCard label="โทนสีผิวของท่าน" hint="เพื่อช่วยแนะนำสีผ้าที่เหมาะสม">
+        <RadioGroup
+          name="skinTone"
+          options={SKIN_TONE_OPTIONS}
+          value={value.skinTone}
+          onChange={(v) => onChange({ ...value, skinTone: v })}
+        />
+      </QuestionCard>
+      <QuestionCard label="รูปร่างโดยทั่วไปของท่าน" hint="เพื่อช่วยแนะนำลายที่เหมาะสม">
+        <RadioGroup
+          name="bodyShape"
+          options={BODY_SHAPE_OPTIONS}
+          value={value.bodyShape}
+          onChange={(v) => onChange({ ...value, bodyShape: v })}
+        />
+      </QuestionCard>
+      <QuestionCard label="ส่วนสูงของท่าน">
+        <RadioGroup
+          name="heightRange"
+          options={HEIGHT_OPTIONS}
+          value={value.heightRange}
+          onChange={(v) => onChange({ ...value, heightRange: v })}
+        />
+      </QuestionCard>
+      <QuestionCard label="สไตล์การแต่งกายที่ท่านชอบโดยรวม">
+        <RadioGroup
+          name="dressStyle"
+          options={DRESS_STYLE_OPTIONS}
+          value={value.dressStyle}
+          onChange={(v) => onChange({ ...value, dressStyle: v })}
+        />
+      </QuestionCard>
+    </>
   );
 }
 
