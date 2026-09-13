@@ -7,7 +7,7 @@ export function SiteHeader() {
         <Link href="/" className="flex items-baseline gap-2">
           <span className="font-heading text-clay text-xl">ผ้าทอบุรีรัมย์</span>
           <span className="text-xs text-clay/70 hidden sm:inline">
-            ระบบแนะนำเฉพาะบุคคล
+            ระบบแนะนำเฉพาะบุคคลด้วยเทคโนโลยีอัจฉริยะ
           </span>
         </Link>
         <nav className="flex items-center gap-5 text-sm">
