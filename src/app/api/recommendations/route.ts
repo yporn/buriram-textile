@@ -21,7 +21,6 @@ import {
 import { prisma } from "@/lib/prisma";
 import {
   recommend,
-  SKIN_TONE_COLOR_CODES,
   type CategoryConfig,
   type FabricInput,
   type UserInput,
@@ -30,6 +29,14 @@ import {
 // Likert score ≥ 4 (ชอบมาก/ชอบมากที่สุด) = นับเป็น "เลือก" สำหรับ recommender
 const RATING_SELECTED_THRESHOLD = 4;
 const TOP_N = 5;
+
+// SkinTone enum ของผู้ใช้ → tag code ในหมวด "skin_tone" (แอดมินติดแท็กนี้ไว้กับผ้าที่เหมาะ)
+const SKIN_TONE_TAG_CODES: Record<string, string> = {
+  FAIR: "fair",
+  MEDIUM: "medium",
+  TAN: "tan",
+  DARK: "dark",
+};
 
 type IncomingBody = {
   gender?: unknown;
@@ -132,16 +139,12 @@ export async function POST(req: NextRequest) {
   const tagCategoryMap = new Map<string, string>();
   for (const t of allTags) tagCategoryMap.set(t.id, t.category.code);
 
-  // color_tone: tag code (warm, cool, ...) → tag id — ใช้จับคู่โทนผิว → โทนสีที่แนะนำ
-  const colorCodeToTagId = new Map<string, string>();
-  for (const t of allTags) {
-    if (t.category.code === "color_tone") colorCodeToTagId.set(t.code, t.id);
-  }
-  const skinToneColorTagIds = skinTone
-    ? (SKIN_TONE_COLOR_CODES[skinTone] ?? [])
-        .map((code) => colorCodeToTagId.get(code))
-        .filter((id): id is string => Boolean(id))
-    : [];
+  // โทนผิวที่ผู้ใช้ตอบ → tag id ในหมวด skin_tone (ถ้าแอดมินตั้งหมวดนี้ไว้)
+  const skinToneTagId = skinTone
+    ? allTags.find(
+        (t) => t.category.code === "skin_tone" && t.code === SKIN_TONE_TAG_CODES[skinTone]
+      )?.id
+    : undefined;
 
   // ---------- Derive selectedTags สำหรับ recommender ----------
   // ใช้ tag IDs เป็น identifier ทั้ง user side และ fabric side (recommender ไม่สนใจว่าเป็น id หรือ code ตราบใดที่เทียบกันได้)
@@ -158,6 +161,8 @@ export async function POST(req: NextRequest) {
   for (const r of tagRatings) {
     if (r.score >= RATING_SELECTED_THRESHOLD) pushSelected(r.tagId);
   }
+  // ตอนที่ 5: โทนผิว → เลือก tag หมวด skin_tone โดยอัตโนมัติ
+  if (skinToneTagId) pushSelected(skinToneTagId);
 
   // ---------- Build FabricInput ----------
   const fabricInputs: FabricInput[] = fabrics.map((f) => {
@@ -170,12 +175,7 @@ export async function POST(req: NextRequest) {
     return { id: f.id, priceThb: f.priceThb, tags: tagsByCategory };
   });
 
-  const userInput: UserInput = {
-    selectedTags,
-    budgetMin,
-    budgetMax,
-    skinToneColorTagIds,
-  };
+  const userInput: UserInput = { selectedTags, budgetMin, budgetMax };
 
   // ---------- Run recommender ----------
   const scored = recommend(fabricInputs, userInput, categoryConfigs, TOP_N);
