@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteHeader() {
   return (
-    <header className="bg-umber-deep border-b border-ochre/30">
+    <header className="sticky top-0 z-50 bg-umber-deep border-b border-ochre/30">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-baseline gap-2">
           <span className="font-heading text-clay text-xl">ผ้าทอบุรีรัมย์</span>
