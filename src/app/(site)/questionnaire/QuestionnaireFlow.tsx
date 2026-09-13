@@ -397,7 +397,7 @@ function PartSection({
       <h2 className="font-heading text-walnut text-base sm:text-lg mt-1 leading-snug">
         {title}
       </h2>
-      <div className="mt-4 space-y-6">{children}</div>
+      <div className="mt-4 space-y-3">{children}</div>
     </section>
   );
 }
