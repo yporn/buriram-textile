@@ -1,9 +1,48 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import type { FiredRule, HardGateResult } from "@/lib/rule-engine";
 import { FabricGallery } from "./FabricGallery";
 
 export const dynamic = "force-dynamic";
+
+// รูปร่างของ matchDetail ที่ recommender บันทึกไว้
+// ฟิลด์ rule ทั้งหมดเป็น optional เพราะ session ที่เก็บก่อนมี rule engine จะไม่มีค่าพวกนี้
+type StoredMatchDetail = {
+  ruleTrace?: FiredRule[] | null;
+  hardGate?: HardGateResult | null;
+};
+
+/** ดึง Rule Trace ของผ้าผืนนี้ เฉพาะเมื่อเข้ามาจากผลการแนะนำ (มี ?session=) */
+async function getRuleTrace(fabricId: string, sessionId: string | undefined) {
+  if (!sessionId) return null;
+
+  const result = await prisma.recommendationResult.findUnique({
+    where: { sessionId_fabricId: { sessionId, fabricId } },
+    select: { matchDetail: true, score: true },
+  });
+  if (!result) return null;
+
+  const detail = result.matchDetail as unknown as StoredMatchDetail | null;
+  const ruleTrace = detail?.ruleTrace ?? [];
+  const hardGate = detail?.hardGate ?? null;
+
+  // session เก่าก่อนมี rule engine → ไม่มีอะไรให้แสดง
+  if (ruleTrace.length === 0 && !hardGate) return null;
+
+  return { ruleTrace, hardGate, score: result.score };
+}
+
+// ช่องทางติดต่อของชุมชนมักกรอกเป็นเบอร์โทร — ถ้าหน้าตาเหมือนเบอร์โทรจริง
+// ให้ปุ่ม "ติดต่อสั่งซื้อ" โทรออกได้เลย ไม่งั้น fallback เป็นข้อความธรรมดา
+function isLikelyPhoneNumber(value: string): boolean {
+  const digits = value.replace(/\D/g, "");
+  return digits.length >= 9 && digits.length <= 10;
+}
+
+function toTelHref(value: string): string {
+  return `tel:${value.replace(/\D/g, "")}`;
+}
 
 async function getFabric(id: string) {
   return prisma.fabric.findUnique({
@@ -50,6 +89,7 @@ export default async function FabricDetailPage({
   if (!fabric || !fabric.isPublished) notFound();
 
   await trackView(id, sessionId);
+  const trace = await getRuleTrace(id, sessionId);
 
   const tagsByCategory = new Map<string, { nameTh: string; tags: string[] }>();
   for (const ft of fabric.tags) {
@@ -142,6 +182,69 @@ export default async function FabricDetailPage({
           </section>
         )}
 
+        {/* ---------- Rule Trace: กฎการอนุมานที่ถูกกระตุ้น ---------- */}
+        {trace && (
+          <section className="mt-12 border-t border-clay-deep pt-8">
+            <p className="font-heading text-ochre-text text-sm tracking-wide">
+              เหตุผลเชิงกฎของระบบ
+            </p>
+            <h2 className="font-heading text-walnut text-xl sm:text-2xl mt-2 mb-2">
+              กฎการอนุมานที่ถูกกระตุ้น
+            </h2>
+            <p className="text-sm text-umber mb-4 leading-relaxed">
+              ระบบแนะนำผ้าผืนนี้ให้คุณด้วยคะแนนความสอดคล้อง{" "}
+              {Math.round(trace.score * 100)}% จากกฎต่อไปนี้
+            </p>
+
+            <ul className="space-y-2 max-w-3xl">
+              {trace.ruleTrace.map((r) => (
+                <li
+                  key={r.code}
+                  className="flex items-start gap-2 bg-clay-deep/40 border border-clay-deep rounded-sm px-3 py-2"
+                >
+                  <span aria-hidden className="text-rust shrink-0 mt-0.5">
+                    ✓
+                  </span>
+                  <span className="text-sm text-umber leading-relaxed">
+                    <span className="font-heading text-walnut">
+                      [Rule {r.code}]
+                    </span>{" "}
+                    {r.conditionLabelTh} ➔ {r.explanationTh}{" "}
+                    <span className="font-heading text-rust whitespace-nowrap">
+                      (+{Math.round(r.weight * 100)}%)
+                    </span>
+                  </span>
+                </li>
+              ))}
+
+              {trace.hardGate && (
+                <li className="flex items-start gap-2 bg-clay-deep/40 border border-clay-deep rounded-sm px-3 py-2">
+                  <span
+                    aria-hidden
+                    className={`shrink-0 mt-0.5 ${
+                      trace.hardGate.passed ? "text-rust" : "text-umber"
+                    }`}
+                  >
+                    {trace.hardGate.passed ? "✓" : "✕"}
+                  </span>
+                  <span className="text-sm text-umber leading-relaxed">
+                    <span className="font-heading text-walnut">
+                      [Hard Gate F_hard = {trace.hardGate.passed ? 1 : 0}]
+                    </span>{" "}
+                    {trace.hardGate.reasonTh}
+                  </span>
+                </li>
+              )}
+            </ul>
+
+            {trace.ruleTrace.length === 0 && (
+              <p className="text-sm text-umber italic mt-2">
+                ไม่มีกฎการอนุมานข้อใดถูกกระตุ้นกับผ้าผืนนี้
+              </p>
+            )}
+          </section>
+        )}
+
         {/* ---------- ชุมชนผู้ทอ ---------- */}
         {fabric.community && (
           <section className="mt-12 border-t border-clay-deep pt-8">
@@ -160,9 +263,25 @@ export default async function FabricDetailPage({
               </p>
             )}
             {fabric.community.contact && (
-              <p className="text-sm text-umber mt-3">
-                ติดต่อ: {fabric.community.contact}
-              </p>
+              <div className="mt-4">
+                {isLikelyPhoneNumber(fabric.community.contact) ? (
+                  <>
+                    <p className="text-sm text-umber mb-3">
+                      เบอร์โทรติดต่อ: {fabric.community.contact}
+                    </p>
+                    <a
+                      href={toTelHref(fabric.community.contact)}
+                      className="inline-flex items-center gap-2 bg-rust text-clay font-medium px-5 py-2.5 rounded-sm shadow-sm hover:bg-[#5C230F] transition"
+                    >
+                      📲 ติดต่อสั่งซื้อ / สนับสนุนชุมชน
+                    </a>
+                  </>
+                ) : (
+                  <p className="text-sm text-umber">
+                    ติดต่อ: {fabric.community.contact}
+                  </p>
+                )}
+              </div>
             )}
           </section>
         )}

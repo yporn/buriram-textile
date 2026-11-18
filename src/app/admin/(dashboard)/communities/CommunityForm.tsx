@@ -85,10 +85,12 @@ export function CommunityForm({
             className={INPUT_CLASS}
           />
         </Field>
-        <Field label="ช่องทางติดต่อ (ไม่บังคับ)">
+        <Field label="เบอร์โทรประธานกลุ่ม / ช่องทางติดต่อ (ไม่บังคับ)">
           <input
+            type="tel"
             value={contact}
             onChange={(e) => setContact(e.target.value)}
+            placeholder="เช่น 081-234-5678 (ถ้าเป็นเบอร์โทร หน้าผ้าจะมีปุ่มกดโทรออกให้อัตโนมัติ)"
             className={INPUT_CLASS}
           />
         </Field>

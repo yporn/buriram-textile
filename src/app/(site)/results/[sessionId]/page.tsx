@@ -45,6 +45,10 @@ export default async function ResultsPage({
   if (!session) notFound();
 
   const total = session.results.length;
+  const [first, ...rest] = session.results;
+  const firstDetail = first
+    ? (first.matchDetail as unknown as MatchDetail)
+    : null;
 
   return (
     <main className="flex-1 bg-clay">
@@ -64,24 +68,45 @@ export default async function ResultsPage({
           </p>
         </header>
 
-        {total === 0 ? (
+        {total === 0 || !first || !firstDetail ? (
           <EmptyState sessionId={sessionId} />
         ) : (
-          <div className="mt-8 space-y-4">
-            {session.results.map((r) => {
-              const detail = r.matchDetail as unknown as MatchDetail;
-              return (
-                <ResultCard
-                  key={r.fabricId}
-                  sessionId={sessionId}
-                  rank={r.rank}
-                  score={r.score}
-                  label={detail.label}
-                  dimensions={detail.dimensions}
-                  fabric={r.fabric}
-                />
-              );
-            })}
+          <div className="mt-8">
+            <p className="font-heading text-ochre-text text-xs tracking-wide mb-2">
+              อันดับ 1 — เหมาะกับคุณที่สุด
+            </p>
+            <ResultCard
+              sessionId={sessionId}
+              rank={first.rank}
+              score={first.score}
+              label={firstDetail.label}
+              dimensions={firstDetail.dimensions}
+              fabric={first.fabric}
+            />
+
+            {rest.length > 0 && (
+              <>
+                <p className="font-heading text-ochre-text text-xs tracking-wide mt-8 mb-3">
+                  อันดับ 2–{rest.length + 1} — ตัวเลือกอื่นที่น่าสนใจ
+                </p>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {rest.map((r) => {
+                    const detail = r.matchDetail as unknown as MatchDetail;
+                    return (
+                      <CompactResultCard
+                        key={r.fabricId}
+                        sessionId={sessionId}
+                        rank={r.rank}
+                        score={r.score}
+                        label={detail.label}
+                        dimensions={detail.dimensions}
+                        fabric={r.fabric}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -246,6 +271,81 @@ function iconForLevel(level: MatchLevel) {
       ×
     </span>
   );
+}
+
+// ---------- Compact result card (อันดับ 2-5) ----------
+
+type CompactResultCardProps = ResultCardProps;
+
+function CompactResultCard({
+  sessionId,
+  rank,
+  score,
+  dimensions,
+  fabric,
+}: CompactResultCardProps) {
+  const primary = fabric.images[0];
+  const scorePercent = Math.round(score * 100);
+  const highlights = topHighlights(dimensions);
+
+  return (
+    <article className="bg-clay border border-clay-deep rounded-sm overflow-hidden flex flex-col">
+      <div className="relative bg-clay-deep aspect-4/5">
+        <span className="absolute top-2 left-2 bg-umber-deep text-clay font-heading text-xs px-1.5 py-0.5 rounded-sm z-10">
+          #{rank}
+        </span>
+        {primary ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={primary.url}
+            alt={primary.alt ?? fabric.name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <FabricPlaceholder name={fabric.name} />
+        )}
+      </div>
+
+      <div className="p-3 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-heading text-walnut text-sm leading-tight">
+            {fabric.name}
+          </h3>
+          <span className="font-heading text-walnut text-sm shrink-0">
+            {scorePercent}%
+          </span>
+        </div>
+        <p className="font-heading text-rust text-sm mt-1">
+          ฿{fabric.priceThb.toLocaleString()}
+        </p>
+
+        {highlights.length > 0 && (
+          <ul className="mt-2 space-y-1">
+            {highlights.map((d) => (
+              <li key={d.categoryCode} className="text-xs text-umber leading-snug line-clamp-2">
+                {d.reasonTh}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <Link
+          href={`/fabrics/${fabric.id}?session=${sessionId}`}
+          className="mt-auto pt-3 text-xs text-rust font-medium underline underline-offset-4 hover:text-walnut"
+        >
+          ดูรายละเอียด →
+        </Link>
+      </div>
+    </article>
+  );
+}
+
+/** เลือกมิติที่คะแนนดีที่สุด (สูงสุด 2 รายการ) มาโชว์เป็น "จุดเด่น" ในการ์ดย่อ */
+function topHighlights(dimensions: DimensionMatch[]): DimensionMatch[] {
+  return [...dimensions]
+    .filter((d) => d.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 2);
 }
 
 // ---------- Placeholder + empty ----------

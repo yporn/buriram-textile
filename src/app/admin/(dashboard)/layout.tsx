@@ -23,6 +23,12 @@ export default function AdminDashboardLayout({
             <Link href="/admin/articles" className="text-walnut hover:text-rust">
               บทความ
             </Link>
+            <Link href="/admin/rules" className="text-walnut hover:text-rust">
+              กฎการแนะนำ
+            </Link>
+            <Link href="/admin/analytics" className="text-walnut hover:text-rust">
+              สถิติ
+            </Link>
             <Link
               href="/"
               className="text-umber hover:text-rust"

@@ -215,6 +215,7 @@ export function QuestionnaireFlow({
   });
   const [tagRatings, setTagRatings] = useState<RatingsState>({});
   const [factorRatings, setFactorRatings] = useState<RatingsState>({});
+  const [activeTab, setActiveTab] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [savedSessionId, setSavedSessionId] = useState<string | null>(null);
@@ -314,6 +315,34 @@ export function QuestionnaireFlow({
     );
   }
 
+  const panels = [
+    <PartDemographics key={0} value={demographics} onChange={setDemographics} />,
+    <PartBehavior
+      key={1}
+      value={behavior}
+      onChange={setBehavior}
+      occasionCategory={occasionCategory}
+    />,
+    <PartPreferences
+      key={2}
+      categories={preferenceCategories}
+      ratings={tagRatings}
+      onChange={setTagRatings}
+    />,
+    <PartFactors
+      key={3}
+      factors={factors}
+      ratings={factorRatings}
+      onChange={setFactorRatings}
+    />,
+    <PartPersonalization
+      key={4}
+      value={personalization}
+      onChange={setPersonalization}
+    />,
+  ];
+  const isLastTab = activeTab === PARTS.length - 1;
+
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-12">
       <h1 className="font-heading text-walnut text-lg sm:text-xl leading-snug">
@@ -323,40 +352,36 @@ export function QuestionnaireFlow({
         กรอกครบทั้ง 5 ตอนในหน้าเดียว แล้วกดส่งแบบสอบถามด้านล่าง
       </p>
 
-      <div className="mt-8 space-y-10">
-        <PartSection no={PARTS[0].no} title={PARTS[0].title}>
-          <PartDemographics value={demographics} onChange={setDemographics} />
-        </PartSection>
+      <div
+        role="tablist"
+        aria-label="ตอนของแบบสอบถาม"
+        className="mt-6 flex gap-1 overflow-x-auto border-b border-clay-deep"
+      >
+        {PARTS.map((part, i) => {
+          const active = i === activeTab;
+          return (
+            <button
+              key={part.no}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setActiveTab(i)}
+              className={[
+                "shrink-0 px-3.5 py-2.5 text-xs sm:text-sm font-heading border-b-2 -mb-px transition",
+                active
+                  ? "border-rust text-walnut"
+                  : "border-transparent text-umber hover:text-walnut",
+              ].join(" ")}
+            >
+              {part.no}
+            </button>
+          );
+        })}
+      </div>
 
-        <PartSection no={PARTS[1].no} title={PARTS[1].title}>
-          <PartBehavior
-            value={behavior}
-            onChange={setBehavior}
-            occasionCategory={occasionCategory}
-          />
-        </PartSection>
-
-        <PartSection no={PARTS[2].no} title={PARTS[2].title}>
-          <PartPreferences
-            categories={preferenceCategories}
-            ratings={tagRatings}
-            onChange={setTagRatings}
-          />
-        </PartSection>
-
-        <PartSection no={PARTS[3].no} title={PARTS[3].title}>
-          <PartFactors
-            factors={factors}
-            ratings={factorRatings}
-            onChange={setFactorRatings}
-          />
-        </PartSection>
-
-        <PartSection no={PARTS[4].no} title={PARTS[4].title}>
-          <PartPersonalization
-            value={personalization}
-            onChange={setPersonalization}
-          />
+      <div className="mt-6" role="tabpanel">
+        <PartSection no={PARTS[activeTab].no} title={PARTS[activeTab].title}>
+          {panels[activeTab]}
         </PartSection>
       </div>
 
@@ -366,15 +391,35 @@ export function QuestionnaireFlow({
         </p>
       )}
 
-      <div className="mt-10 flex justify-end">
+      <div className="mt-10 flex items-center justify-between gap-3">
         <button
           type="button"
-          onClick={() => void submit()}
-          disabled={submitting}
-          className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] disabled:bg-umber/40 disabled:cursor-not-allowed transition"
+          onClick={() => setActiveTab((t) => Math.max(0, t - 1))}
+          disabled={activeTab === 0}
+          className="text-sm text-walnut font-medium px-4 py-2.5 rounded-sm border border-clay-deep hover:border-umber-deep disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-          {submitting ? "กำลังส่ง..." : "ส่งแบบสอบถาม"}
+          ← ย้อนกลับ
         </button>
+
+        <div className="flex items-center gap-3">
+          {!isLastTab && (
+            <button
+              type="button"
+              onClick={() => setActiveTab((t) => Math.min(PARTS.length - 1, t + 1))}
+              className="text-sm text-walnut font-medium px-4 py-2.5 rounded-sm border border-clay-deep hover:border-umber-deep transition"
+            >
+              ถัดไป →
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => void submit()}
+            disabled={submitting}
+            className="bg-rust text-clay font-medium px-6 py-2.5 rounded-sm hover:bg-[#5C230F] disabled:bg-umber/40 disabled:cursor-not-allowed transition"
+          >
+            {submitting ? "กำลังส่ง..." : "ส่งแบบสอบถาม"}
+          </button>
+        </div>
       </div>
     </div>
   );

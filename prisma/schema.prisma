@@ -43,6 +43,7 @@ model Tag {
   fabricTags  FabricTag[]
   answers     SessionAnswer[]
   ratings     SessionRating[]
+  inferenceRules InferenceRule[]
 
   @@unique([categoryId, code])
   @@map("tags")
@@ -302,6 +303,74 @@ model Feedback {
 }
 
 // -------------------------------------------------------------------
+// 4.2) แบบสอบถามความพึงพอใจในการใช้งานระบบ (ภาคผนวก ข ของงานวิจัย)
+//      ไม่ผูกกับ session ใด ๆ — เป็นแบบสอบถามทั่วไปที่เข้าถึงได้จากเมนู
+// -------------------------------------------------------------------
+
+enum SatisfactionOccupation {
+  STUDENT
+  CIVIL_SERVANT
+  PRIVATE_EMPLOYEE
+  BUSINESS_OWNER
+  AGRICULTURE
+  OTHER
+}
+
+enum FamiliarityLevel {
+  EXPERT // มีความรู้ความเชี่ยวชาญสูง (เช่น ช่างทอ, นักวิชาการ)
+  REGULAR_INTEREST // มีความสนใจและใช้งานเป็นประจำ
+  SPECIAL_OCCASION_ONLY // ใช้งานเฉพาะโอกาสสำคัญเท่านั้น
+  LOW_BUT_INTERESTED // ไม่ค่อยมีความรู้/ไม่ค่อยได้ใช้งานแต่สนใจ
+}
+
+enum TechExperience {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+// ตอนที่ 2 — Likert 1..5 ของข้อ 1-19:
+//   q1-q6   ด้านประสิทธิภาพของระบบ
+//   q7-q12  ด้านการใช้งานระบบ
+//   q13-q15 ด้านความสามารถในการอธิบายเหตุผล
+//   q16-q19 ด้านประโยชน์และการยอมรับเทคโนโลยี
+model SatisfactionSurvey {
+  id              String                 @id @default(cuid())
+  gender          Gender
+  genderOther     String?
+  ageRange        AgeRange
+  occupation      SatisfactionOccupation
+  occupationOther String?
+  familiarity     FamiliarityLevel
+  techExperience  TechExperience
+
+  q1  Int
+  q2  Int
+  q3  Int
+  q4  Int
+  q5  Int
+  q6  Int
+  q7  Int
+  q8  Int
+  q9  Int
+  q10 Int
+  q11 Int
+  q12 Int
+  q13 Int
+  q14 Int
+  q15 Int
+  q16 Int
+  q17 Int
+  q18 Int
+  q19 Int
+
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@map("satisfaction_surveys")
+}
+
+// -------------------------------------------------------------------
 // 4.1) ข้อมูลวิจัยเพิ่มเติม — Likert 1..5
 // -------------------------------------------------------------------
 
@@ -358,4 +427,52 @@ model Article {
   relatedFabric   Fabric? @relation(fields: [relatedFabricId], references: [id], onDelete: SetNull)
 
   @@map("articles")
+}
+
+// -------------------------------------------------------------------
+// 6) ฐานความรู้: กฎการอนุมาน (Inference Rules) — R001–R102
+//    กฎข้ามหมวด: IF ผู้ใช้มีคุณสมบัติ X → ผ้าที่มี tag Y ได้คะแนนเพิ่มตามน้ำหนัก
+//    (ต่างจากการจับคู่ tag ในหมวดเดียวกันที่ recommender.ts ทำอยู่เดิม)
+// -------------------------------------------------------------------
+
+enum RuleConditionField {
+  SKIN_TONE // session.skinTone
+  BODY_SHAPE // session.bodyShape
+  DRESS_STYLE // session.dressStyle
+  HEIGHT_RANGE // session.heightRange
+  OCCUPATION // session.occupation
+  AGE_RANGE // session.ageRange
+  GENDER // session.gender
+  OCCASION_TAG // ผู้ใช้ติ๊กเลือก occasion tag นี้ (SessionAnswer)
+  PREFERRED_TAG // ผู้ใช้ให้คะแนน Likert tag นี้ >= 4 (SessionRating)
+}
+
+model InferenceRule {
+  id             String             @id @default(cuid())
+  code           String             @unique // "R002"
+  nameTh         String
+  conditionField RuleConditionField
+  conditionValue String // enum value ("MEDIUM") หรือ tag code ("official")
+  thenTagId      String // ผ้าต้องมี tag นี้จึงจะได้คะแนนจากกฎข้อนี้
+  thenTag        Tag                @relation(fields: [thenTagId], references: [id], onDelete: Cascade)
+  weight         Float // 0.40 = +40%
+  explanationTh  String             @db.Text
+  isActive       Boolean            @default(true)
+  sortOrder      Int                @default(0)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@map("inference_rules")
+}
+
+// ค่าถ่วงน้ำหนักของสูตรคะแนนรวม — แถวเดียว (singleton) ปรับได้จาก Rule Manager
+// Final = baseWeight × BaseScore + ruleWeight × RuleScore
+model RecommenderSetting {
+  id              String   @id @default("singleton")
+  baseWeight      Float    @default(0.6)
+  ruleWeight      Float    @default(0.4)
+  budgetTolerance Float    @default(0.2) // เกินงบได้กี่ส่วน ก่อนถือว่าไม่ผ่าน hard gate
+  updatedAt       DateTime @updatedAt
+
+  @@map("recommender_settings")
 }

@@ -2,9 +2,12 @@ import Link from "next/link";
 
 const FOOTER_LINKS = [
   { href: "/", label: "หน้าแรก" },
+  { href: "/fabrics", label: "คลังผ้าทอบุรีรัมย์" },
   { href: "/questionnaire", label: "เริ่มแบบสอบถาม" },
-  { href: "/fabrics", label: "ผ้าทอทั้งหมด" },
+  { href: "/results", label: "ผลการแนะนำผ้า" },
   { href: "/stories", label: "เรื่องราวผ้าทอ" },
+  { href: "/satisfaction", label: "ประเมินความพึงพอใจระบบ" },
+  { href: "/about", label: "เกี่ยวกับระบบ" },
 ];
 
 export function SiteFooter() {

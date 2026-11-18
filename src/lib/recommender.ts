@@ -5,6 +5,16 @@
 // ใช้ที่: src/lib/recommender.ts
 // ===================================================================
 
+import {
+  combineScores,
+  evaluateHardGate,
+  evaluateRules,
+  type FiredRule,
+  type HardGateResult,
+  type RecommenderWeights,
+  type RuleInput,
+} from "./rule-engine";
+
 export type MatchLevel = "full" | "partial" | "none";
 
 export interface DimensionMatch {
@@ -16,11 +26,22 @@ export interface DimensionMatch {
   reasonTh: string;          // ข้อความอธิบายที่แสดงบนหน้าจอ
 }
 
+export type ScoreLabel = "เหมาะมาก" | "เหมาะ" | "พอได้";
+
 export interface ScoredFabric {
   fabricId: string;
   score: number;             // 0..1
-  label: "เหมาะมาก" | "เหมาะ" | "พอได้";
+  label: ScoreLabel;
   dimensions: DimensionMatch[];
+  // --- ส่วนที่มาจาก rule engine (ไม่มีถ้าไม่ได้ส่ง ruleContext เข้ามา) ---
+  ruleTrace?: FiredRule[];
+  hardGate?: HardGateResult;
+  scoreBreakdown?: {
+    base: number;
+    rule: number;
+    baseWeight: number;
+    ruleWeight: number;
+  };
 }
 
 // --- ข้อมูลนำเข้า ---------------------------------------------------
@@ -47,7 +68,7 @@ export interface CategoryConfig {
 
 // --- ค่าคงที่ -------------------------------------------------------
 
-const BUDGET_TOLERANCE = 0.2;   // เกินงบได้ไม่เกิน 20% ยังได้คะแนนครึ่งหนึ่ง
+const DEFAULT_BUDGET_TOLERANCE = 0.2; // เกินงบได้ไม่เกิน 20% ยังได้คะแนนครึ่งหนึ่ง
 const BUDGET_CATEGORY: CategoryConfig = {
   code: "budget",
   nameTh: "งบประมาณ",
@@ -92,7 +113,8 @@ function buildTagReason(nameTh: string, matched: string[], userTags: string[]): 
 function scoreBudget(
   price: number,
   min?: number | null,
-  max?: number | null
+  max?: number | null,
+  tolerance: number = DEFAULT_BUDGET_TOLERANCE
 ): DimensionMatch | null {
   if (min == null && max == null) return null; // ผู้ใช้ไม่ได้ระบุงบ
 
@@ -102,7 +124,7 @@ function scoreBudget(
 
   if (max != null && price > max) {
     const over = (price - max) / max;
-    if (over <= BUDGET_TOLERANCE) {
+    if (over <= tolerance) {
       score = 0.5;
       level = "partial";
       reasonTh = `งบประมาณ: สูงกว่างบเล็กน้อย (${price.toLocaleString()} บาท)`;
@@ -129,7 +151,8 @@ function scoreBudget(
 export function scoreFabric(
   fabric: FabricInput,
   input: UserInput,
-  categories: CategoryConfig[]
+  categories: CategoryConfig[],
+  budgetTolerance: number = DEFAULT_BUDGET_TOLERANCE
 ): ScoredFabric {
   const dimensions: DimensionMatch[] = [];
 
@@ -143,7 +166,12 @@ export function scoreFabric(
     if (dim) dimensions.push(dim);
   }
 
-  const budgetDim = scoreBudget(fabric.priceThb, input.budgetMin, input.budgetMax);
+  const budgetDim = scoreBudget(
+    fabric.priceThb,
+    input.budgetMin,
+    input.budgetMax,
+    budgetTolerance
+  );
   if (budgetDim) dimensions.push(budgetDim);
 
   // ถ่วงน้ำหนักแล้ว normalize ด้วยผลรวมน้ำหนักของ "มิติที่ผู้ใช้ตอบ" เท่านั้น
@@ -154,21 +182,75 @@ export function scoreFabric(
   return {
     fabricId: fabric.id,
     score,
-    label: score >= 0.75 ? "เหมาะมาก" : score >= 0.5 ? "เหมาะ" : "พอได้",
+    label: labelFor(score),
     dimensions,
   };
 }
 
+/** เกณฑ์ป้ายกำกับความเหมาะสม — ใช้ร่วมกันทั้งคะแนนฐานและคะแนนหลังรวมกฎ */
+export function labelFor(score: number): ScoreLabel {
+  if (score >= 0.75) return "เหมาะมาก";
+  if (score >= 0.5) return "เหมาะ";
+  return "พอได้";
+}
+
 // --- แนะนำผ้า Top-N -------------------------------------------------
+
+/**
+ * บริบทกฎการอนุมาน — ถ้าไม่ส่งมา จะให้คะแนนแบบจับคู่ tag อย่างเดียว (พฤติกรรมเดิม)
+ * ดู src/lib/rule-engine.ts สำหรับตรรกะกฎ
+ */
+export interface RuleScoringContext {
+  /** กฎที่เงื่อนไขตรงกับผู้ใช้คนนี้แล้ว (ผ่าน applicableRules() มา) */
+  applicable: RuleInput[];
+  /** tag id ทั้งหมดของผ้าแต่ละผืน — key คือ fabric id */
+  fabricTagIds: Map<string, Set<string>>;
+  /** "tag code" → ชื่อไทย ของ tag ฝั่งเงื่อนไข (ใช้ประกอบข้อความ trace) */
+  conditionTagLabels: Map<string, string>;
+  weights: RecommenderWeights;
+}
 
 export function recommend(
   fabrics: FabricInput[],
   input: UserInput,
   categories: CategoryConfig[],
-  topN = 5
+  topN = 5,
+  ruleContext?: RuleScoringContext
 ): ScoredFabric[] {
-  return fabrics
-    .map((f) => scoreFabric(f, input, categories))
+  const tolerance = ruleContext?.weights.budgetTolerance ?? DEFAULT_BUDGET_TOLERANCE;
+
+  const scored = fabrics.map((f) => {
+    const base = scoreFabric(f, input, categories, tolerance);
+    if (!ruleContext) return base;
+
+    const evaluation = evaluateRules(
+      ruleContext.applicable,
+      ruleContext.fabricTagIds.get(f.id) ?? new Set(),
+      ruleContext.conditionTagLabels
+    );
+    const finalScore = combineScores(
+      base.score,
+      evaluation.ruleScore,
+      evaluation.applicableCount,
+      ruleContext.weights
+    );
+
+    return {
+      ...base,
+      score: finalScore,
+      label: labelFor(finalScore),
+      ruleTrace: evaluation.fired,
+      hardGate: evaluateHardGate(f.priceThb, input.budgetMax, tolerance) ?? undefined,
+      scoreBreakdown: {
+        base: base.score,
+        rule: evaluation.ruleScore,
+        baseWeight: ruleContext.weights.baseWeight,
+        ruleWeight: ruleContext.weights.ruleWeight,
+      },
+    } satisfies ScoredFabric;
+  });
+
+  return scored
     .filter((r) => r.score > 0) // ไม่ตรงเลยสักมิติ ไม่ต้องแนะนำ
     .sort((a, b) => b.score - a.score)
     .slice(0, topN);
