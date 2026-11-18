@@ -1,7 +1,4 @@
-import fs from "fs";
-import path from "path";
 import Link from "next/link";
-import Image from "next/image";
 import { MobileNav } from "./mobile-nav";
 
 const NAV_LINKS = [
@@ -14,26 +11,11 @@ const NAV_LINKS = [
   { href: "/about", label: "เกี่ยวกับระบบ" },
 ] as const;
 
-const LOGO_FILENAME = "university-logo.png";
-
 export function SiteHeader() {
-  const hasLogo = fs.existsSync(
-    path.join(process.cwd(), "public", LOGO_FILENAME)
-  );
-
   return (
     <header className="sticky top-0 z-50 bg-umber-deep border-b border-ochre/30">
       <div className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-3 min-w-0">
-          {hasLogo && (
-            <Image
-              src={`/${LOGO_FILENAME}`}
-              alt="โลโก้มหาวิทยาลัย"
-              width={40}
-              height={40}
-              className="h-9 w-9 sm:h-10 sm:w-10 object-contain shrink-0"
-            />
-          )}
           <span className="flex flex-col leading-tight min-w-0">
             <span className="font-heading text-clay text-base sm:text-lg truncate">
               ระบบแนะนำผ้าทอพื้นบ้านบุรีรัมย์เฉพาะบุคคล
